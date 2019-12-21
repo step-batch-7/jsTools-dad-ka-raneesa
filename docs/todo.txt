@@ -1,0 +1,23 @@
+requirements to implement :
+1.node tail.js filename
+2.node tail.js -n number filename
+3.(cat filename | node tail.js) or (node tail.js)
+4.(cat filename | node tail.js -n number) or (node tail.js -n number)
+
+
+features:
+
+1.node tail.js a.txt
+2.node tail.js -n 8 a.txt
+3.cat a.txt | node tail.js  or node tail.js
+4.cat a.txt | node tail.js  or node tail.js -n 8
+
+-----------------------------------------------------
+total features:
+
+1.node tail.js a.txt
+2.node tail.js -n 8 a.txt
+3.cat a.txt | node tail.js  or node tail.js
+4.cat a.txt | node tail.js  or node tail.js -n 8
+5.node tail.js a.txt b.txt c.txt
+6.node tail.js -n 8 a.txt b.txt c.txt

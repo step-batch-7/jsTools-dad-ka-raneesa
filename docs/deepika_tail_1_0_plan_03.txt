@@ -1,0 +1,148 @@
+----------let say file--------
+------a.txt------
+  one
+  two
+  three
+  four
+  five
+  six
+  seven
+  eight
+  nine
+  ten
+  eleven
+  twelve
+-------------------------
+  ------b.txt------
+  one
+  two
+  three
+  four
+  five
+  six
+------------------------
+
+---------------------------3rd requirement---------------------------------------
+
+possible out comes:(3 scenarios)
+a.should give last 10 lines of a file if standard input has more than 10 lines
+output => line of text : LastLines
+  three
+  four
+  five
+  six
+  seven
+  eight
+  nine
+  ten
+  eleven
+  twelve
+input => command line args
+  cat a.txt | node tail.js
+
+-------------------------------------------
+
+b.should give whole lines if given standard input has less than 10 lines
+output => line of text : LastLines
+  one
+  two
+  three
+  four
+  five
+  six
+input => command line args
+  cat b.txt | node tail.js
+
+-------------------------------------------
+
+c.should give error if given file is not exist
+output =>
+  tail:c.txt:no such file or directory
+input => cat c.txt | node tail.js
+
+-------------------------------------------
+
+considering a black box of app
+ for "a"flow ------->
+[cat a.txt | node tail.js]
+ => { tail.js } =>
+  three
+  four
+  five
+  six
+  seven
+  eight
+  nine
+  ten
+  eleven
+  twelve
+
+ for "b" flow ------>
+ [cat b.txt | node tail.js]
+ => { tail.js } =>
+ one
+  two
+  three
+  four
+  five
+  six
+
+for "c" flow -------->
+ [cat b.txt | node tail.js]
+ => { tail.js } =>
+ tail: c.txt: no such file or directory
+
+--------------------------flow of 3rd requirement-------------------
+[3.1a] last step
+description : -> if no.of lines are more than 10 then it will give last 10 lines of the input
+              -> if no.of line are less than 10 then it will give whole lines in that text
+output => lines of text : LastLines
+  three
+  four
+  five
+  six
+  seven
+  eight
+  nine
+  ten
+  eleven
+  twelve
+input => array of strings ,number of lines(length of array)
+  ["one","two","three","four","five",.........,"twelve"]
+name => getLastLines
+-----------------------------
+
+[3.1b] previous step
+output => error text
+  tail: c.txt: No such file or directory
+input => error object
+{error:ENOENT}
+name => generateErrorMessage
+-----------------------------
+
+[3.2] previous step
+output => object of array of strings or error object
+  {arrayOfLines:["one","two","three","four","five",.........,"twelve"]}
+   or
+  {error:ENOENT}
+input => objectOfUserOptions
+  {}
+name => getArrayOfTextLines
+----------------------------
+
+3.3] previous step
+output => objectOfUserOptions
+  {}
+input => array of strings : userOptions
+  []
+name : parseUserOptions
+----------------------------
+
+[3.4] previous step
+output => array of strings : userOptions
+  []
+input => array of strings : userArguments
+  ["node","tail.js"]
+name => filterUserOptions
+----------------------------
+----------------------------------------------------------------------------

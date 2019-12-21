@@ -1,0 +1,19 @@
+features:
+version1:
+
+1.node tail.js a.txt
+2.node tail.js -n 8 a.txt
+3.cat a.txt | node tail.js  or node tail.js
+4.cat a.txt | node tail.js  or node tail.js -n 8
+5.node tail.js a.txt b.txt c.txt
+6.node tail.js -n 8 a.txt b.txt c.txt
+
+-----------------------------------------------------
+total features:
+
+1.node tail.js a.txt
+2.node tail.js -n 8 a.txt
+3.cat a.txt | node tail.js  or node tail.js
+4.cat a.txt | node tail.js  or node tail.js -n 8
+5.node tail.js a.txt b.txt c.txt
+6.node tail.js -n 8 a.txt b.txt c.txt

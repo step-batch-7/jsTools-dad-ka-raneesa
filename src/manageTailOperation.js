@@ -1,5 +1,5 @@
 const { utilityFunctions } = require("./config.js");
-const { isFileExist, reader, encoding } = utilityFunctions;
+const { isFileExist, reader, encoding } = utilityFunctions();
 
 const {
   filterUserOptions,

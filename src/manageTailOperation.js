@@ -1,4 +1,5 @@
-const fs = require("fs");
+const { utilityFunctions } = require("./config.js");
+const { isFileExist, reader, encoding } = utilityFunctions;
 
 const {
   filterUserOptions,
@@ -12,7 +13,7 @@ const manageTailOperation = function(cmdArgs) {
   const userOptions = filterUserOptions(cmdArgs);
   const objectOfOptions = parseUserOptions(userOptions);
 
-  if (!fs.existsSync(objectOfOptions.filePath)) {
+  if (!isFileExist(objectOfOptions.filePath)) {
     const errMsg = {
       filePath: objectOfOptions.filePath,
       msg: "no such file or directory"
@@ -22,8 +23,8 @@ const manageTailOperation = function(cmdArgs) {
 
   let fileContentWithOptions = loadFileContent(
     objectOfOptions,
-    fs.readFileSync,
-    "utf8"
+    reader,
+    encoding
   );
   return getLastLines(fileContentWithOptions);
 };

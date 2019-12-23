@@ -1,0 +1,2 @@
+(node tail.js ./appTests/badFile.txt)
+tail: ./appTests/badFile.txt: no such file or directory

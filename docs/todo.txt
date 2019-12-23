@@ -7,7 +7,7 @@ things to implement:
 =>---done--- create src and test and appTest directories
 =>---done--- create files tail.js, testTail.js,tailLib.js
 =>---done--- use mocha,nyc mocha,chai
-=> create app test for
+=>---done--- create app test for
     node tail.js a.txt
     node tail.js -n 8 a.txt
 

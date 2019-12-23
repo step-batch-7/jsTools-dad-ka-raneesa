@@ -1,0 +1,7 @@
+(node tail.js ./appTests/goodFile2.txt)
+1
+2
+3
+4
+5
+6

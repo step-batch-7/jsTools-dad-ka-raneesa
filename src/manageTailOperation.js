@@ -18,7 +18,8 @@ const manageTailOperation = function(cmdArgs) {
       filePath: objectOfOptions.filePath,
       msg: "no such file or directory"
     };
-    throw new Error(generateErrorMessage(errMsg));
+    const error = generateErrorMessage(errMsg);
+    return { error: error };
   }
 
   let fileContentWithOptions = loadFileContent(
@@ -26,7 +27,8 @@ const manageTailOperation = function(cmdArgs) {
     reader,
     encoding
   );
-  return getLastLines(fileContentWithOptions);
+  const lastLines = getLastLines(fileContentWithOptions);
+  return { lastLines: lastLines };
 };
 
 module.exports = { manageTailOperation };

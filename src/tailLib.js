@@ -4,15 +4,12 @@ const filterUserOptions = function(cmdArgs) {
 };
 
 const parseUserOptions = function(userOptions) {
-  const parsedOptions = {};
   if (userOptions[0] == "-n") {
-    parsedOptions.noOfLines = +userOptions[1];
-    parsedOptions.filePath = userOptions[2];
-    return parsedOptions;
+    noOfLines = +userOptions[1];
+    filePath = userOptions[2];
+    return { noOfLines, filePath };
   }
-  parsedOptions.filePath = userOptions[0];
-  parsedOptions.noOfLines = 10;
-  return parsedOptions;
+  return { filePath: userOptions[0], noOfLines: 10 };
 };
 
 const generateErrorMessage = function(errMsg) {

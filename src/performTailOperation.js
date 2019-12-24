@@ -17,7 +17,7 @@ const performTailOperation = function(cmdArgs, fsUtils) {
       msg: "no such file or directory"
     };
     const error = generateErrorMessage(errMsg);
-    return { error: error };
+    return { error: error, lastLines: "" };
   }
 
   let fileContentWithOptions = loadFileContent(
@@ -26,7 +26,7 @@ const performTailOperation = function(cmdArgs, fsUtils) {
     encoding
   );
   const lastLines = getLastLines(fileContentWithOptions);
-  return { lastLines: lastLines };
+  return { lastLines: lastLines, error: "" };
 };
 
 module.exports = { performTailOperation };

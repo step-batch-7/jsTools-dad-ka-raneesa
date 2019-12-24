@@ -10,8 +10,8 @@ const main = function(cmdArgs) {
     encoding: "utf8"
   };
   const result = performTailOperation(cmdArgs, fsUtils);
-  result.error && stderr.write(result.error);
-  result.lastLines && stdout.write(result.lastLines);
+  stderr.write(result.error);
+  stdout.write(result.lastLines);
 };
 
 main(process.argv);

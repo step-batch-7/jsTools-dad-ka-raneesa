@@ -100,7 +100,8 @@ describe("performTailOperation", function() {
     });
 
     assert.deepStrictEqual(actual, {
-      error: "tail: a.txt: no such file or directory"
+      error: "tail: a.txt: no such file or directory",
+      lastLines: ""
     });
   });
 
@@ -117,7 +118,10 @@ describe("performTailOperation", function() {
       reader,
       encoding
     });
-    const expected = { lastLines: "3\n4\n5\n6\n7\n8\n9\n10\n11\n12" };
+    const expected = {
+      lastLines: "3\n4\n5\n6\n7\n8\n9\n10\n11\n12",
+      error: ""
+    };
     assert.deepStrictEqual(actual, expected);
   });
 
@@ -134,7 +138,7 @@ describe("performTailOperation", function() {
       reader,
       encoding
     });
-    const expected = { lastLines: "1\n2\n3\n4\n5\n6" };
+    const expected = { lastLines: "1\n2\n3\n4\n5\n6", error: "" };
     assert.deepStrictEqual(actual, expected);
   });
 
@@ -151,7 +155,7 @@ describe("performTailOperation", function() {
       reader,
       encoding
     });
-    const expected = { lastLines: "" };
+    const expected = { lastLines: "", error: "" };
     assert.deepStrictEqual(actual, expected);
   });
 
@@ -168,7 +172,7 @@ describe("performTailOperation", function() {
       reader,
       encoding
     });
-    const expected = { lastLines: "7\n8\n9\n10\n11\n12" };
+    const expected = { lastLines: "7\n8\n9\n10\n11\n12", error: "" };
     assert.deepStrictEqual(actual, expected);
   });
 
@@ -185,7 +189,7 @@ describe("performTailOperation", function() {
       reader,
       encoding
     });
-    const expected = { lastLines: "1\n2\n3\n4" };
+    const expected = { lastLines: "1\n2\n3\n4", error: "" };
     assert.deepStrictEqual(actual, expected);
   });
 });

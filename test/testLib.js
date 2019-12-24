@@ -1,3 +1,5 @@
+"use strict";
+
 const {
   filterUserOptions,
   parseUserOptions,
@@ -5,6 +7,8 @@ const {
   loadFileContent,
   getLastLines
 } = require("../src/tailLib");
+const { performTailOperation } = require("../src/manageTailOperation.js");
+
 const assert = require("chai").assert;
 
 describe("filterUserOptions", function() {
@@ -83,5 +87,111 @@ describe("getLastLines", function() {
     let fileContent = { data, noOfLines: 5 };
     let expected = "4\n5\n6\n7\n8";
     assert.strictEqual(getLastLines(fileContent), expected);
+  });
+});
+
+describe("performTailOperation", function() {
+  it("Should give error if file is not exist", function() {
+    const isFileExist = filePath => {
+      return false;
+    };
+    const actual = performTailOperation(
+      ["node", "tail.js", "a.txt"],
+      isFileExist
+    );
+
+    assert.deepStrictEqual(actual, {
+      error: "tail: a.txt: no such file or directory"
+    });
+  });
+
+  it("Should should give 10 last lines of a file if file has more than 10 lines ", function() {
+    const reader = function(filePath, encoding) {
+      return "3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+    };
+    const isFileExist = filePath => {
+      return true;
+    };
+    const encoding = "utf8";
+    const actual = performTailOperation(
+      ["node", "tail.js", "a.txt"],
+      isFileExist,
+      reader,
+      encoding
+    );
+    const expected = { lastLines: "3\n4\n5\n6\n7\n8\n9\n10\n11\n12" };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("Should should give whole lines of a file if file has less than 10 lines ", function() {
+    const reader = function(filePath, encoding) {
+      return "1\n2\n3\n4\n5\n6";
+    };
+    const isFileExist = filePath => {
+      return true;
+    };
+    const encoding = "utf8";
+    const actual = performTailOperation(
+      ["node", "tail.js", "a.txt"],
+      isFileExist,
+      reader,
+      encoding
+    );
+    const expected = { lastLines: "1\n2\n3\n4\n5\n6" };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("Should should give empty string if file is empty ", function() {
+    const reader = function(filePath, encoding) {
+      return "";
+    };
+    const isFileExist = filePath => {
+      return true;
+    };
+    const encoding = "utf8";
+    const actual = performTailOperation(
+      ["node", "tail.js", "a.txt"],
+      isFileExist,
+      reader,
+      encoding
+    );
+    const expected = { lastLines: "" };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("Should should give 6 last lines of a file if file has more than given 6 lines in command ", function() {
+    const reader = function(filePath, encoding) {
+      return "7\n8\n9\n10\n11\n12";
+    };
+    const isFileExist = filePath => {
+      return true;
+    };
+    const encoding = "utf8";
+    const actual = performTailOperation(
+      ["node", "tail.js", "a.txt"],
+      isFileExist,
+      reader,
+      encoding
+    );
+    const expected = { lastLines: "7\n8\n9\n10\n11\n12" };
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("Should should give whole lines of a file if file has less than given 6 lines in command ", function() {
+    const reader = function(filePath, encoding) {
+      return "1\n2\n3\n4";
+    };
+    const isFileExist = filePath => {
+      return true;
+    };
+    const encoding = "utf8";
+    const actual = performTailOperation(
+      ["node", "tail.js", "a.txt"],
+      isFileExist,
+      reader,
+      encoding
+    );
+    const expected = { lastLines: "1\n2\n3\n4" };
+    assert.deepStrictEqual(actual, expected);
   });
 });

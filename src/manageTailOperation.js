@@ -1,6 +1,3 @@
-const { utilityFunctions } = require("./config.js");
-const { isFileExist, reader, encoding } = utilityFunctions();
-
 const {
   filterUserOptions,
   parseUserOptions,
@@ -9,7 +6,7 @@ const {
   getLastLines
 } = require("./tailLib.js");
 
-const manageTailOperation = function(cmdArgs) {
+const performTailOperation = function(cmdArgs, isFileExist, reader, encoding) {
   const userOptions = filterUserOptions(cmdArgs);
   const objectOfOptions = parseUserOptions(userOptions);
 
@@ -31,4 +28,4 @@ const manageTailOperation = function(cmdArgs) {
   return { lastLines: lastLines };
 };
 
-module.exports = { manageTailOperation };
+module.exports = { performTailOperation };

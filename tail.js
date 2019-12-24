@@ -1,7 +1,8 @@
 "use strict";
+
 const fs = require("fs");
-const { performTailOperation } = require("./src/performTailOperation");
 const { stdout, stderr } = require("process");
+const { performTailOperation } = require("./src/performTailOperation");
 
 const main = function(cmdArgs) {
   const fsUtils = {

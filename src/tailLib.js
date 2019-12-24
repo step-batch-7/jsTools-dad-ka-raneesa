@@ -1,3 +1,5 @@
+"use strict";
+
 const filterUserOptions = function(cmdArgs) {
   let [, , ...userOptions] = [...cmdArgs];
   return userOptions;

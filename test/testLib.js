@@ -7,7 +7,7 @@ const {
   loadFileContent,
   getLastLines
 } = require("../src/tailLib");
-const { performTailOperation } = require("../src/manageTailOperation.js");
+const { performTailOperation } = require("../src/performTailOperation.js");
 
 const assert = require("chai").assert;
 

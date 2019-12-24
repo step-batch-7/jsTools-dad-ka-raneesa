@@ -95,10 +95,9 @@ describe("performTailOperation", function() {
     const isFileExist = filePath => {
       return false;
     };
-    const actual = performTailOperation(
-      ["node", "tail.js", "a.txt"],
+    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
       isFileExist
-    );
+    });
 
     assert.deepStrictEqual(actual, {
       error: "tail: a.txt: no such file or directory"
@@ -113,12 +112,11 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(
-      ["node", "tail.js", "a.txt"],
+    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
-    );
+    });
     const expected = { lastLines: "3\n4\n5\n6\n7\n8\n9\n10\n11\n12" };
     assert.deepStrictEqual(actual, expected);
   });
@@ -131,12 +129,11 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(
-      ["node", "tail.js", "a.txt"],
+    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
-    );
+    });
     const expected = { lastLines: "1\n2\n3\n4\n5\n6" };
     assert.deepStrictEqual(actual, expected);
   });
@@ -149,12 +146,11 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(
-      ["node", "tail.js", "a.txt"],
+    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
-    );
+    });
     const expected = { lastLines: "" };
     assert.deepStrictEqual(actual, expected);
   });
@@ -167,12 +163,11 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(
-      ["node", "tail.js", "a.txt"],
+    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
-    );
+    });
     const expected = { lastLines: "7\n8\n9\n10\n11\n12" };
     assert.deepStrictEqual(actual, expected);
   });
@@ -185,12 +180,11 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(
-      ["node", "tail.js", "a.txt"],
+    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
-    );
+    });
     const expected = { lastLines: "1\n2\n3\n4" };
     assert.deepStrictEqual(actual, expected);
   });

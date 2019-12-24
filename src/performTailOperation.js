@@ -6,7 +6,8 @@ const {
   getLastLines
 } = require("./tailLib.js");
 
-const performTailOperation = function(cmdArgs, isFileExist, reader, encoding) {
+const performTailOperation = function(cmdArgs, fsUtils) {
+  const { isFileExist, reader, encoding } = fsUtils;
   const userOptions = filterUserOptions(cmdArgs);
   const objectOfOptions = parseUserOptions(userOptions);
 

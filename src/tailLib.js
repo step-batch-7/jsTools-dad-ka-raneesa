@@ -7,8 +7,8 @@ const filterUserOptions = function(cmdArgs) {
 
 const parseUserOptions = function(userOptions) {
   if (userOptions[0] == "-n") {
-    noOfLines = +userOptions[1];
-    filePath = userOptions[2];
+    const noOfLines = +userOptions[1];
+    const filePath = userOptions[2];
     return { noOfLines, filePath };
   }
   return { filePath: userOptions[0], noOfLines: 10 };

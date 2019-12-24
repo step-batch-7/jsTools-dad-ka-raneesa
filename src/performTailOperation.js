@@ -10,14 +10,15 @@ const performTailOperation = function(cmdArgs, fsUtils) {
   const { isFileExist, reader, encoding } = fsUtils;
   const userOptions = filterUserOptions(cmdArgs);
   const objectOfOptions = parseUserOptions(userOptions);
+  const result = { lastLines: "", error: "" };
 
   if (!isFileExist(objectOfOptions.filePath)) {
     const errMsg = {
       filePath: objectOfOptions.filePath,
       msg: "no such file or directory"
     };
-    const error = generateErrorMessage(errMsg);
-    return { error: error, lastLines: "" };
+    result.error = generateErrorMessage(errMsg);
+    return result;
   }
 
   let fileContentWithOptions = loadFileContent(
@@ -25,8 +26,8 @@ const performTailOperation = function(cmdArgs, fsUtils) {
     reader,
     encoding
   );
-  const lastLines = getLastLines(fileContentWithOptions);
-  return { lastLines: lastLines, error: "" };
+  result.lastLines = getLastLines(fileContentWithOptions);
+  return result;
 };
 
 module.exports = { performTailOperation };

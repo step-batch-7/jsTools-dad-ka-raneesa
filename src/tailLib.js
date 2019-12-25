@@ -14,10 +14,6 @@ const parseUserOptions = function(userOptions) {
   return { filePath: userOptions[0], noOfLines: 10 };
 };
 
-const generateErrorMessage = function(errMsg) {
-  return `tail: ${errMsg.filePath}: ${errMsg.msg}`;
-};
-
 const loadFileContent = function(objectOfOptions, reader, encoding) {
   objectOfOptions.data = reader(objectOfOptions.filePath, encoding);
   return objectOfOptions;
@@ -33,7 +29,6 @@ const getLastLines = function(contentWithOptions) {
 module.exports = {
   filterUserOptions,
   parseUserOptions,
-  generateErrorMessage,
   loadFileContent,
   getLastLines
 };

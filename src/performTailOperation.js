@@ -3,7 +3,6 @@
 const {
   filterUserOptions,
   parseUserOptions,
-  generateErrorMessage,
   loadFileContent,
   getLastLines
 } = require("./tailLib.js");
@@ -11,23 +10,17 @@ const {
 const performTailOperation = function(cmdArgs, fsUtils) {
   const { isFileExist, reader, encoding } = fsUtils;
   const userOptions = filterUserOptions(cmdArgs);
-  const objectOfOptions = parseUserOptions(userOptions);
+  const parsedOptions = parseUserOptions(userOptions);
   const result = { lastLines: "", error: "" };
 
-  if (!isFileExist(objectOfOptions.filePath)) {
-    const errMsg = {
-      filePath: objectOfOptions.filePath,
-      msg: "no such file or directory"
-    };
-    result.error = generateErrorMessage(errMsg);
+  if (!isFileExist(parsedOptions.filePath)) {
+    const filePath = parsedOptions.filePath,
+      msg = "no such file or directory";
+    result.error = `tail: ${filePath}: ${msg}`;
     return result;
   }
 
-  let fileContentWithOptions = loadFileContent(
-    objectOfOptions,
-    reader,
-    encoding
-  );
+  let fileContentWithOptions = loadFileContent(parsedOptions, reader, encoding);
   result.lastLines = getLastLines(fileContentWithOptions);
   return result;
 };

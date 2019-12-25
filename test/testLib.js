@@ -3,7 +3,6 @@
 const {
   filterUserOptions,
   parseUserOptions,
-  generateErrorMessage,
   loadFileContent,
   getLastLines
 } = require("../src/tailLib");
@@ -34,16 +33,6 @@ describe("parseUserOptions", function() {
     const actual = parseUserOptions(["-n", "8", "a.txt"]);
     const expected = { noOfLines: 8, filePath: "a.txt" };
     assert.deepStrictEqual(actual, expected);
-  });
-});
-
-describe("generateErrorMessage", function() {
-  it("Should give error if file is not exist", function() {
-    const actual = generateErrorMessage({
-      filePath: "a.txt",
-      msg: "no such file or directory"
-    });
-    assert.strictEqual(actual, "tail: a.txt: no such file or directory");
   });
 });
 

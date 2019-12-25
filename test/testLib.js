@@ -36,46 +36,21 @@ describe("parseUserOptions", function() {
   });
 });
 
-describe("loadFileContent", function() {
-  it("should load the file content", function() {
-    let objectOfOptions = { filePath: "a.txt" };
-    const reader = function(path) {
-      assert.deepStrictEqual(path, "a.txt");
-      return "1\n2\n3\n4\n5";
-    };
-    const expected = {
-      data: "1\n2\n3\n4\n5",
-      filePath: "a.txt"
-    };
-    assert.deepStrictEqual(
-      loadFileContent(objectOfOptions, reader, "utf8"),
-      expected
-    );
-  });
-});
-
 describe("getLastLines", function() {
   it("should give last ten line of file content if lines are more than 10", function() {
-    const fileContent = {
-      noOfLines: 10,
-      data: "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
-    };
+    const fileContent = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     let expected = "3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
-    assert.strictEqual(getLastLines(fileContent), expected);
+    assert.strictEqual(getLastLines(fileContent, 10), expected);
   });
   it("should give last total line of file content if lines are less than 10", function() {
-    const fileContent = {
-      noOfLines: 10,
-      data: "1\n2\n3\n4\n5"
-    };
+    const fileContent = "1\n2\n3\n4\n5";
     let expected = "1\n2\n3\n4\n5";
-    assert.strictEqual(getLastLines(fileContent), expected);
+    assert.strictEqual(getLastLines(fileContent, 10), expected);
   });
-  it("should give last total line of file content if tail count is given", function() {
-    let data = "1\n2\n3\n4\n5\n6\n7\n8";
-    let fileContent = { data, noOfLines: 5 };
+  it("should give last given no of lines of file content if tail count is given", function() {
+    let fileContent = "1\n2\n3\n4\n5\n6\n7\n8";
     let expected = "4\n5\n6\n7\n8";
-    assert.strictEqual(getLastLines(fileContent), expected);
+    assert.strictEqual(getLastLines(fileContent, 5), expected);
   });
 });
 

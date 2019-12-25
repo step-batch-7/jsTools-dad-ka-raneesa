@@ -14,14 +14,9 @@ const parseUserOptions = function(userOptions) {
   return { filePath: userOptions[0], noOfLines: 10 };
 };
 
-const loadFileContent = function(objectOfOptions, reader, encoding) {
-  objectOfOptions.data = reader(objectOfOptions.filePath, encoding);
-  return objectOfOptions;
-};
-
-const getLastLines = function(contentWithOptions) {
-  let lines = contentWithOptions.data.split("\n");
-  let count = Math.abs(contentWithOptions.noOfLines);
+const getLastLines = function(fileContent, noOfLines) {
+  let lines = fileContent.split("\n");
+  let count = Math.abs(noOfLines);
   let slicedLines = lines.reverse().slice(0, count);
   return slicedLines.reverse().join("\n");
 };
@@ -29,6 +24,5 @@ const getLastLines = function(contentWithOptions) {
 module.exports = {
   filterUserOptions,
   parseUserOptions,
-  loadFileContent,
   getLastLines
 };

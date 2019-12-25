@@ -3,7 +3,6 @@
 const {
   filterUserOptions,
   parseUserOptions,
-  loadFileContent,
   getLastLines
 } = require("./tailLib.js");
 
@@ -20,8 +19,8 @@ const performTailOperation = function(cmdArgs, fsUtils) {
     return result;
   }
 
-  let fileContentWithOptions = loadFileContent(parsedOptions, reader, encoding);
-  result.lastLines = getLastLines(fileContentWithOptions);
+  let fileContent = reader(parsedOptions.filePath, encoding);
+  result.lastLines = getLastLines(fileContent, parsedOptions.noOfLines);
   return result;
 };
 

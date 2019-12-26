@@ -31,7 +31,7 @@ describe("parseUserOptions", function() {
 
   it("Should give no of line and file name in object", function() {
     const actual = parseUserOptions(["-n", "8", "a.txt"]);
-    const expected = { noOfLines: 8, filePath: "a.txt" };
+    const expected = { noOfLines: "8", filePath: "a.txt" };
     assert.deepStrictEqual(actual, expected);
   });
 });
@@ -65,6 +65,20 @@ describe("performTailOperation", function() {
 
     assert.deepStrictEqual(actual, {
       error: "tail: a.txt: no such file or directory",
+      lastLines: ""
+    });
+  });
+
+  it("should give error message when only option is mentioned without the count", function() {
+    const isFileExist = filePath => {
+      return false;
+    };
+    const actual = performTailOperation(
+      ["node", "tail.js", "-n", "goodFile"],
+      isFileExist
+    );
+    assert.deepStrictEqual(actual, {
+      error: "tail: illegal offset -- goodFile",
       lastLines: ""
     });
   });

@@ -9,19 +9,22 @@ const {
 const performTailOperation = function(cmdArgs, fsUtils) {
   const { isFileExist, reader, encoding } = fsUtils;
   const userOptions = filterUserOptions(cmdArgs);
-  const parsedOptions = parseUserOptions(userOptions);
-  const tailResult = { lastLines: "", error: "" };
-
-  if (!isFileExist(parsedOptions.filePath)) {
-    const filePath = parsedOptions.filePath;
-    let msg = "no such file or directory";
-    tailResult.error = `tail: ${filePath}: ${msg}`;
-    return tailResult;
+  const { noOfLines, filePath } = parseUserOptions(userOptions);
+  let lastLines = "";
+  let error = "";
+  if (Number.isNaN(+noOfLines)) {
+    return { error: `tail: illegal offset -- ${noOfLines}`, lastLines };
   }
 
-  let fileContent = reader(parsedOptions.filePath, encoding);
-  tailResult.lastLines = getLastLines(fileContent, parsedOptions.noOfLines);
-  return tailResult;
+  if (!isFileExist(filePath)) {
+    let errorMsg = "no such file or directory";
+    error = `tail: ${filePath}: ${errorMsg}`;
+    return { error, lastLines };
+  }
+
+  let fileContent = reader(filePath, encoding);
+  lastLines = getLastLines(fileContent, +noOfLines);
+  return { error, lastLines };
 };
 
 module.exports = { performTailOperation };

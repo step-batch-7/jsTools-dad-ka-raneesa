@@ -27,9 +27,9 @@ const loadFile = function(filePath, fsUtils) {
 };
 
 const getLastLines = function(fileContent, noOfLines) {
-  let count = Math.abs(noOfLines);
-  let slicedLines = fileContent.reverse().slice(0, count);
-  return slicedLines.reverse().join("\n");
+  const count = Math.abs(noOfLines);
+  let slicedLines = fileContent.slice(-count).join("\n");
+  return slicedLines;
 };
 
 module.exports = {

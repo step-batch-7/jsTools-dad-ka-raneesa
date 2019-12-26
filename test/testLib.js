@@ -81,11 +81,13 @@ describe("getLastLines", function() {
     let expected = "3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     assert.strictEqual(getLastLines(fileContent, 10), expected);
   });
+
   it("should give last total lines of file content if lines are less than 10", function() {
     const fileContent = ["1", "2", "3", "4", "5"];
     let expected = "1\n2\n3\n4\n5";
     assert.strictEqual(getLastLines(fileContent, 10), expected);
   });
+
   it("should give last given no of lines of file content if tail count is given", function() {
     let fileContent = ["1", "2", "3", "4", "5", "6", "7", "8"];
     let expected = "4\n5\n6\n7\n8";

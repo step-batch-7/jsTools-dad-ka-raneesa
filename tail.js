@@ -10,9 +10,9 @@ const main = function(cmdArgs) {
     reader: fs.readFileSync,
     encoding: "utf8"
   };
-  const result = performTailOperation(cmdArgs, fsUtils);
-  stderr.write(result.error);
-  stdout.write(result.lastLines);
+  const { error, lastLines } = performTailOperation(cmdArgs, fsUtils);
+  stderr.write(error);
+  stdout.write(lastLines);
 };
 
 main(process.argv);

@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const { stdout, stderr } = require("process");
-const { performTailOperation } = require("./src/performTailOperation");
+const { tail } = require("./src/performTail");
 
 const main = function(cmdArgs) {
   const fsUtils = {
@@ -10,7 +10,7 @@ const main = function(cmdArgs) {
     reader: fs.readFileSync,
     encoding: "utf8"
   };
-  const { error, lastLines } = performTailOperation(cmdArgs, fsUtils);
+  const { error, lastLines } = tail(cmdArgs, fsUtils);
   stderr.write(error);
   stdout.write(lastLines);
 };

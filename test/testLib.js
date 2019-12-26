@@ -6,7 +6,7 @@ const {
   loadFileContent,
   getLastLines
 } = require("../src/tailLib");
-const { performTailOperation } = require("../src/performTailOperation.js");
+const { tail } = require("../src/performTail.js");
 
 const assert = require("chai").assert;
 
@@ -54,12 +54,12 @@ describe("getLastLines", function() {
   });
 });
 
-describe("performTailOperation", function() {
+describe("tail", function() {
   it("Should give error if file is not exist", function() {
     const isFileExist = filePath => {
       return false;
     };
-    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
+    const actual = tail(["node", "tail.js", "a.txt"], {
       isFileExist
     });
 
@@ -73,10 +73,7 @@ describe("performTailOperation", function() {
     const isFileExist = filePath => {
       return false;
     };
-    const actual = performTailOperation(
-      ["node", "tail.js", "-n", "goodFile"],
-      isFileExist
-    );
+    const actual = tail(["node", "tail.js", "-n", "goodFile"], isFileExist);
     assert.deepStrictEqual(actual, {
       error: "tail: illegal offset -- goodFile",
       lastLines: ""
@@ -91,7 +88,7 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
+    const actual = tail(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
@@ -111,7 +108,7 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
+    const actual = tail(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
@@ -128,7 +125,7 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
+    const actual = tail(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
@@ -145,7 +142,7 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
+    const actual = tail(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding
@@ -162,7 +159,7 @@ describe("performTailOperation", function() {
       return true;
     };
     const encoding = "utf8";
-    const actual = performTailOperation(["node", "tail.js", "a.txt"], {
+    const actual = tail(["node", "tail.js", "a.txt"], {
       isFileExist,
       reader,
       encoding

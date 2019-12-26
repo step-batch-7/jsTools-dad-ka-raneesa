@@ -3,11 +3,11 @@
 const {
   filterUserOptions,
   parseUserOptions,
+  loadFile,
   getLastLines
 } = require("./tailLib.js");
 
 const tail = function(cmdArgs, fsUtils) {
-  const { isFileExist, reader, encoding } = fsUtils;
   const userOptions = filterUserOptions(cmdArgs);
   const { noOfLines, filePath } = parseUserOptions(userOptions);
   let lastLines = "";
@@ -16,13 +16,11 @@ const tail = function(cmdArgs, fsUtils) {
     return { error: `tail: illegal offset -- ${noOfLines}`, lastLines };
   }
 
-  if (!isFileExist(filePath)) {
-    let errorMsg = "no such file or directory";
-    error = `tail: ${filePath}: ${errorMsg}`;
-    return { error, lastLines };
+  const { fileError, fileContent } = loadFile(filePath, fsUtils);
+  if (fileError) {
+    return { error: fileError, lastLines };
   }
 
-  let fileContent = reader(filePath, encoding);
   lastLines = getLastLines(fileContent, +noOfLines);
   return { error, lastLines };
 };

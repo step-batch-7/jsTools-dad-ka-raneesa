@@ -14,6 +14,18 @@ const parseUserOptions = function(userOptions) {
   return { filePath: userOptions[0], noOfLines: 10 };
 };
 
+const loadFile = function(filePath, fsUtils) {
+  const { isFileExist, reader, encoding } = fsUtils;
+  if (!isFileExist(filePath)) {
+    let errorMsg = "no such file or directory";
+    const fileError = `tail: ${filePath}: ${errorMsg}`;
+    return { fileError };
+  }
+
+  let fileContent = reader(filePath, encoding);
+  return { fileContent };
+};
+
 const getLastLines = function(fileContent, noOfLines) {
   let lines = fileContent.split("\n");
   let count = Math.abs(noOfLines);
@@ -24,5 +36,6 @@ const getLastLines = function(fileContent, noOfLines) {
 module.exports = {
   filterUserOptions,
   parseUserOptions,
+  loadFile,
   getLastLines
 };

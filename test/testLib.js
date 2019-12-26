@@ -3,7 +3,7 @@
 const {
   filterUserOptions,
   parseUserOptions,
-  loadFileContent,
+  loadFile,
   getLastLines
 } = require("../src/tailLib");
 const { tail } = require("../src/performTail.js");
@@ -33,6 +33,32 @@ describe("parseUserOptions", function() {
     const actual = parseUserOptions(["-n", "8", "a.txt"]);
     const expected = { noOfLines: "8", filePath: "a.txt" };
     assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe("loadFile", function() {
+  it("Should give error if file not present", function() {
+    const isFileExist = function(filePath) {
+      return false;
+    };
+    const utils = { isFileExist };
+    assert.deepStrictEqual(loadFile("a.txt", utils), {
+      fileError: `tail: a.txt: no such file or directory`
+    });
+  });
+
+  it("Should give content of file if file present", function() {
+    const isFileExist = function(filePath) {
+      return true;
+    };
+
+    const reader = function(filePath, encoding) {
+      return "1\n2\n3\n4\n5";
+    };
+    const utils = { isFileExist, reader, encoding: "utf8" };
+    assert.deepStrictEqual(loadFile("a.txt", utils), {
+      fileContent: "1\n2\n3\n4\n5"
+    });
   });
 });
 

@@ -38,7 +38,7 @@ describe("parseUserOptions", function() {
 
 describe("loadFile", function() {
   it("Should give error if file not present", function() {
-    const isFileExist = function(filePath) {
+    const isFileExist = filePath => {
       return false;
     };
     const utils = { isFileExist };
@@ -48,33 +48,46 @@ describe("loadFile", function() {
   });
 
   it("Should give content of file if file present", function() {
-    const isFileExist = function(filePath) {
+    const isFileExist = filePath => {
       return true;
     };
 
-    const reader = function(filePath, encoding) {
+    const reader = (filePath, encoding) => {
       return "1\n2\n3\n4\n5";
     };
     const utils = { isFileExist, reader, encoding: "utf8" };
     assert.deepStrictEqual(loadFile("a.txt", utils), {
-      fileContent: "1\n2\n3\n4\n5"
+      fileContent: ["1", "2", "3", "4", "5"]
     });
   });
 });
 
 describe("getLastLines", function() {
   it("should give last ten line of file content if lines are more than 10", function() {
-    const fileContent = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+    const fileContent = [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ];
     let expected = "3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     assert.strictEqual(getLastLines(fileContent, 10), expected);
   });
-  it("should give last total line of file content if lines are less than 10", function() {
-    const fileContent = "1\n2\n3\n4\n5";
+  it("should give last total lines of file content if lines are less than 10", function() {
+    const fileContent = ["1", "2", "3", "4", "5"];
     let expected = "1\n2\n3\n4\n5";
     assert.strictEqual(getLastLines(fileContent, 10), expected);
   });
   it("should give last given no of lines of file content if tail count is given", function() {
-    let fileContent = "1\n2\n3\n4\n5\n6\n7\n8";
+    let fileContent = ["1", "2", "3", "4", "5", "6", "7", "8"];
     let expected = "4\n5\n6\n7\n8";
     assert.strictEqual(getLastLines(fileContent, 5), expected);
   });
@@ -107,7 +120,7 @@ describe("tail", function() {
   });
 
   it("Should should give 10 last lines of a file if file has more than 10 lines ", function() {
-    const reader = function(filePath, encoding) {
+    const reader = (filePath, encoding) => {
       return "3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     };
     const isFileExist = filePath => {
@@ -127,7 +140,7 @@ describe("tail", function() {
   });
 
   it("Should should give whole lines of a file if file has less than 10 lines ", function() {
-    const reader = function(filePath, encoding) {
+    const reader = (filePath, encoding) => {
       return "1\n2\n3\n4\n5\n6";
     };
     const isFileExist = filePath => {
@@ -144,7 +157,7 @@ describe("tail", function() {
   });
 
   it("Should should give empty string if file is empty ", function() {
-    const reader = function(filePath, encoding) {
+    const reader = (filePath, encoding) => {
       return "";
     };
     const isFileExist = filePath => {
@@ -161,7 +174,7 @@ describe("tail", function() {
   });
 
   it("Should should give 6 last lines of a file if file has more than given 6 lines in command ", function() {
-    const reader = function(filePath, encoding) {
+    const reader = (filePath, encoding) => {
       return "7\n8\n9\n10\n11\n12";
     };
     const isFileExist = filePath => {
@@ -178,7 +191,7 @@ describe("tail", function() {
   });
 
   it("Should should give whole lines of a file if file has less than given 6 lines in command ", function() {
-    const reader = function(filePath, encoding) {
+    const reader = (filePath, encoding) => {
       return "1\n2\n3\n4";
     };
     const isFileExist = filePath => {

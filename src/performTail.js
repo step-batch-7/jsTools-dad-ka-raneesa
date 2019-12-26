@@ -12,15 +12,10 @@ const tail = function(cmdArgs, fsUtils) {
   const { noOfLines, filePath } = parseUserOptions(userOptions);
   let lastLines = "";
   let error = "";
-  if (Number.isNaN(+noOfLines)) {
+  if (Number.isNaN(+noOfLines))
     return { error: `tail: illegal offset -- ${noOfLines}`, lastLines };
-  }
-
   const { fileError, fileContent } = loadFile(filePath, fsUtils);
-  if (fileError) {
-    return { error: fileError, lastLines };
-  }
-
+  if (fileError) return { error: fileError, lastLines };
   lastLines = getLastLines(fileContent, +noOfLines);
   return { error, lastLines };
 };

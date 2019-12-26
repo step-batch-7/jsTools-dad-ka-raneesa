@@ -21,15 +21,15 @@ const loadFile = function(filePath, fsUtils) {
     const fileError = `tail: ${filePath}: ${errorMsg}`;
     return { fileError };
   }
-
   let fileContent = reader(filePath, encoding);
+  fileContent = fileContent.split("\n");
   return { fileContent };
 };
 
 const getLastLines = function(fileContent, noOfLines) {
-  let lines = fileContent.split("\n");
+  //let lines = fileContent.split("\n");
   let count = Math.abs(noOfLines);
-  let slicedLines = lines.reverse().slice(0, count);
+  let slicedLines = fileContent.reverse().slice(0, count);
   return slicedLines.reverse().join("\n");
 };
 

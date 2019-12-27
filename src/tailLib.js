@@ -6,12 +6,15 @@ const filterUserOptions = function(cmdArgs) {
 };
 
 const parseUserOptions = function(userOptions) {
+  let noOfLines = 10;
+  let filePath = userOptions[0];
   if (userOptions[0] == "-n") {
-    const noOfLines = userOptions[1];
-    const filePath = userOptions[2];
-    return { noOfLines, filePath };
+    noOfLines = userOptions[1];
+    filePath = userOptions[2];
+    if (isNaN(+noOfLines))
+      return { inputError: `tail: illegal offset -- ${noOfLines}` };
   }
-  return { filePath: userOptions[0], noOfLines: 10 };
+  return { filePath, noOfLines };
 };
 
 const loadFile = function(filePath, fsUtils) {

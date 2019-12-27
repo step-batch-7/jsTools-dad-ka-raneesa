@@ -34,6 +34,12 @@ describe("parseUserOptions", function() {
     const expected = { noOfLines: "8", filePath: "a.txt" };
     assert.deepStrictEqual(actual, expected);
   });
+
+  it("Should give error if we give string instead of count", function() {
+    const actual = parseUserOptions(["-n", "a.txt"]);
+    const expected = { inputError: `tail: illegal offset -- a.txt` };
+    assert.deepStrictEqual(actual, expected);
+  });
 });
 
 describe("loadFile", function() {

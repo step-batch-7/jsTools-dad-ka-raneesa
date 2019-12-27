@@ -1,12 +1,12 @@
 "use strict";
 
+const { tail } = require("../src/performTail.js");
 const {
   filterUserOptions,
   parseUserOptions,
   loadFile,
   getLastLines
 } = require("../src/tailLib");
-const { tail } = require("../src/performTail.js");
 
 const assert = require("chai").assert;
 
@@ -101,13 +101,9 @@ describe("tail", function() {
       return false;
     };
 
-    const printers = {
-      error: error => {
-        assert.deepStrictEqual(error, "tail: a.txt: no such file or directory");
-      },
-      lastLines: txt => {
-        assert.deepStrictEqual(txt, "");
-      }
+    const printers = function({ error, lastLines }) {
+      assert.deepStrictEqual(error, "tail: a.txt: no such file or directory");
+      assert.deepStrictEqual(lastLines, "");
     };
 
     tail(
@@ -123,13 +119,9 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return false;
     };
-    const printers = {
-      error: error => {
-        assert.deepStrictEqual(error, "tail: illegal offset -- goodFile");
-      },
-      lastLines: txt => {
-        assert.strictEqual(txt, "");
-      }
+    const printers = function({ error, lastLines }) {
+      assert.deepStrictEqual(error, "tail: illegal offset -- goodFile");
+      assert.strictEqual(lastLines, "");
     };
 
     tail(
@@ -148,10 +140,9 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = {
-      error: error => assert.strictEqual(error, ""),
-      lastLines: txt =>
-        assert.deepStrictEqual(txt, "3\n4\n5\n6\n7\n8\n9\n10\n11\n12")
+    const printers = function({ error, lastLines }) {
+      assert.strictEqual(error, "");
+      assert.deepStrictEqual(lastLines, "3\n4\n5\n6\n7\n8\n9\n10\n11\n12");
     };
     tail(
       ["node", "tail.js", "a.txt"],
@@ -170,9 +161,9 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = {
-      error: error => assert.strictEqual(error, ""),
-      lastLines: txt => assert.deepStrictEqual(txt, "1\n2\n3\n4\n5\n6")
+    const printers = function({ error, lastLines }) {
+      assert.strictEqual(error, "");
+      assert.deepStrictEqual(lastLines, "1\n2\n3\n4\n5\n6");
     };
     tail(
       ["node", "tail.js", "a.txt"],
@@ -191,9 +182,9 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = {
-      error: error => assert.strictEqual(error, ""),
-      lastLines: txt => assert.strictEqual(txt, "")
+    const printers = function({ error, lastLines }) {
+      assert.strictEqual(error, "");
+      assert.strictEqual(lastLines, "");
     };
     tail(
       ["node", "tail.js", "a.txt"],
@@ -212,9 +203,9 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = {
-      error: error => assert.strictEqual(error, ""),
-      lastLines: txt => assert.strictEqual(txt, "7\n8\n9\n10\n11\n12")
+    const printers = function({ error, lastLines }) {
+      assert.strictEqual(error, "");
+      assert.strictEqual(lastLines, "7\n8\n9\n10\n11\n12");
     };
     tail(
       ["node", "tail.js", "a.txt"],
@@ -233,9 +224,9 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = {
-      error: error => assert.strictEqual(error, ""),
-      lastLines: txt => assert.strictEqual(txt, "1\n2\n3\n4")
+    const printers = function({ error, lastLines }) {
+      assert.strictEqual(error, "");
+      assert.strictEqual(lastLines, "1\n2\n3\n4");
     };
     tail(
       ["node", "tail.js", "a.txt"],

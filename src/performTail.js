@@ -13,27 +13,30 @@ const tail = function(cmdArgs, fsUtils, printers) {
   let lastLines = "";
   let error = "";
   if (Number.isNaN(+noOfLines))
-    return (
-      printers.error(`tail: illegal offset -- ${noOfLines}`),
-      printers.lastLines(lastLines)
-    );
+    return printers({
+      error: `tail: illegal offset -- ${noOfLines}`,
+      lastLines: lastLines
+    });
   if (filePath) {
     const { fileError, fileContent } = loadFile(filePath, fsUtils);
-    if (fileError)
-      return printers.error(fileError), printers.lastLines(lastLines);
+    if (fileError) return printers({ error: fileError, lastLines });
 
     lastLines = getLastLines(fileContent, +noOfLines);
-    return printers.error(error), printers.lastLines(lastLines);
+    return printers({ error, lastLines });
   }
   const readStream = fsUtils.readStream;
-  readStream.setEncoding("utf8");
   const stdinLines = [];
   readStream.on("data", data => {
-    stdinLines.push(...data.trim().split("\n"));
+    stdinLines.push(
+      ...data
+        .toSting()
+        .trim()
+        .split("\n")
+    );
   });
   readStream.on("end", () => {
     lastLines = getLastLines(stdinLines, +noOfLines);
-    printers.error(error), printers.lastLines(lastLines);
+    printers({ error, lastLines });
   });
 };
 

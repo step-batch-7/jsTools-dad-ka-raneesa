@@ -11,14 +11,11 @@ const main = function(cmdArgs) {
     readStream: stdin
   };
 
-  const tailOutPutPrinters = {
-    error: error => {
-      stderr.write(error);
-    },
-    lastLines: lastLines => {
-      stdout.write(lastLines);
-    }
+  const tailOutPutPrinters = function({ error, lastLines }) {
+    stderr.write(error);
+    stdout.write(lastLines);
   };
+
   tail(cmdArgs, fsUtils, tailOutPutPrinters);
 };
 

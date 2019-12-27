@@ -10,9 +10,16 @@ const main = function(cmdArgs) {
     reader: fs.readFileSync,
     encoding: "utf8"
   };
-  const { error, lastLines } = tail(cmdArgs, fsUtils);
-  stderr.write(error);
-  stdout.write(lastLines);
+
+  const tailOutPutPrinters = {
+    error: error => {
+      stderr.write(error);
+    },
+    lastLines: lastLines => {
+      stdout.write(lastLines);
+    }
+  };
+  tail(cmdArgs, fsUtils, tailOutPutPrinters);
 };
 
 main(process.argv);

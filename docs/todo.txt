@@ -17,3 +17,13 @@ tasks:
 =>---done--- get Array Of TextLines
 =>---done--- Get Last Lines
 =>---done--- generate Error Message
+
+version 0.2:
+node tail.js
+
+tasks:
+=> parseUserOptions
+=>readStandardInput
+=>addLines
+=>getTailLines
+=>printLastLines

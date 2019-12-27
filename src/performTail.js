@@ -17,12 +17,24 @@ const tail = function(cmdArgs, fsUtils, printers) {
       printers.error(`tail: illegal offset -- ${noOfLines}`),
       printers.lastLines(lastLines)
     );
-  const { fileError, fileContent } = loadFile(filePath, fsUtils);
-  if (fileError)
-    return printers.error(fileError), printers.lastLines(lastLines);
+  if (filePath) {
+    const { fileError, fileContent } = loadFile(filePath, fsUtils);
+    if (fileError)
+      return printers.error(fileError), printers.lastLines(lastLines);
 
-  lastLines = getLastLines(fileContent, +noOfLines);
-  return printers.error(error), printers.lastLines(lastLines);
+    lastLines = getLastLines(fileContent, +noOfLines);
+    return printers.error(error), printers.lastLines(lastLines);
+  }
+  const readStream = fsUtils.readStream;
+  readStream.setEncoding("utf8");
+  const stdinLines = [];
+  readStream.on("data", data => {
+    stdinLines.push(...data.trim().split("\n"));
+  });
+  readStream.on("end", () => {
+    lastLines = getLastLines(stdinLines, +noOfLines);
+    printers.error(error), printers.lastLines(lastLines);
+  });
 };
 
 module.exports = { tail };

@@ -1,13 +1,14 @@
 "use strict";
 
 const fs = require("fs");
-const { stdout, stderr } = require("process");
+const { stdin, stdout, stderr } = require("process");
 const { tail } = require("./src/performTail");
 
 const main = function(cmdArgs) {
   const fsUtils = {
     isFileExist: fs.existsSync,
-    reader: fs.readFileSync
+    reader: fs.readFileSync,
+    readStream: stdin
   };
 
   const tailOutPutPrinters = {

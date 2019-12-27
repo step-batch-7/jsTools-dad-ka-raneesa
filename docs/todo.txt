@@ -19,11 +19,14 @@ tasks:
 =>---done--- generate Error Message
 
 version 0.2:
-node tail.js
+
+cat a.txt | node tail.js  or node tail.js
+cat a.txt | node tail.js  or node tail.js -n 8
+
 
 tasks:
-=> parseUserOptions
-=>readStandardInput
-=>addLines
-=>getTailLines
-=>printLastLines
+=>---done--- parseUserOptions
+=>---done--- readStandardInput
+=>---done--- addLines
+=>---done--- getTailLines
+=>---done--- printLastLines

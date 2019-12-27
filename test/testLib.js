@@ -148,7 +148,6 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const encoding = "utf8";
     const printers = {
       error: error => assert.strictEqual(error, ""),
       lastLines: txt =>
@@ -158,8 +157,7 @@ describe("tail", function() {
       ["node", "tail.js", "a.txt"],
       {
         isFileExist,
-        reader,
-        encoding
+        reader
       },
       printers
     );
@@ -172,7 +170,6 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const encoding = "utf8";
     const printers = {
       error: error => assert.strictEqual(error, ""),
       lastLines: txt => assert.deepStrictEqual(txt, "1\n2\n3\n4\n5\n6")
@@ -181,8 +178,7 @@ describe("tail", function() {
       ["node", "tail.js", "a.txt"],
       {
         isFileExist,
-        reader,
-        encoding
+        reader
       },
       printers
     );
@@ -195,7 +191,6 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const encoding = "utf8";
     const printers = {
       error: error => assert.strictEqual(error, ""),
       lastLines: txt => assert.strictEqual(txt, "")
@@ -204,8 +199,7 @@ describe("tail", function() {
       ["node", "tail.js", "a.txt"],
       {
         isFileExist,
-        reader,
-        encoding
+        reader
       },
       printers
     );
@@ -218,7 +212,6 @@ describe("tail", function() {
     const isFileExist = filePath => {
       return true;
     };
-    const encoding = "utf8";
     const printers = {
       error: error => assert.strictEqual(error, ""),
       lastLines: txt => assert.strictEqual(txt, "7\n8\n9\n10\n11\n12")
@@ -227,31 +220,28 @@ describe("tail", function() {
       ["node", "tail.js", "a.txt"],
       {
         isFileExist,
-        reader,
-        encoding
+        reader
       },
       printers
     );
   });
 
   it("Should should give whole lines of a file if file has less than given 6 lines in command ", function() {
-    const reader = (filePath, encoding) => {
+    const reader = filePath => {
       return "1\n2\n3\n4";
     };
     const isFileExist = filePath => {
       return true;
     };
-    const encoding = "utf8";
     const printers = {
       error: error => assert.strictEqual(error, ""),
       lastLines: txt => assert.strictEqual(txt, "1\n2\n3\n4")
     };
-    const actual = tail(
+    tail(
       ["node", "tail.js", "a.txt"],
       {
         isFileExist,
-        reader,
-        encoding
+        reader
       },
       printers
     );

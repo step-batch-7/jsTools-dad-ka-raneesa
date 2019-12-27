@@ -15,13 +15,13 @@ const parseUserOptions = function(userOptions) {
 };
 
 const loadFile = function(filePath, fsUtils) {
-  const { isFileExist, reader, encoding } = fsUtils;
+  const { isFileExist, reader } = fsUtils;
   if (!isFileExist(filePath)) {
     let errorMsg = "no such file or directory";
     const fileError = `tail: ${filePath}: ${errorMsg}`;
     return { fileError };
   }
-  let fileContent = reader(filePath, encoding);
+  let fileContent = reader(filePath, "utf8");
   fileContent = fileContent.split("\n");
   return { fileContent };
 };

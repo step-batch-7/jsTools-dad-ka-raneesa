@@ -7,8 +7,7 @@ const { tail } = require("./src/performTail");
 const main = function(cmdArgs) {
   const fsUtils = {
     isFileExist: fs.existsSync,
-    reader: fs.readFileSync,
-    encoding: "utf8"
+    reader: fs.readFileSync
   };
 
   const tailOutPutPrinters = {

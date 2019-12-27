@@ -7,22 +7,7 @@ const {
   getLastLines
 } = require("./tailLib.js");
 
-const tail = function(cmdArgs, fsUtils, printers) {
-  const userOptions = filterUserOptions(cmdArgs);
-  const { noOfLines, filePath, inputError } = parseUserOptions(userOptions);
-  let lastLines = "";
-  let error = "";
-  if (inputError) {
-    return printers({ error: inputError, lastLines });
-  }
-  if (filePath) {
-    const { fileError, fileContent } = loadFile(filePath, fsUtils);
-    if (fileError) return printers({ error: fileError, lastLines });
-
-    lastLines = getLastLines(fileContent, +noOfLines);
-    return printers({ error, lastLines });
-  }
-  const readStream = fsUtils.readStream;
+const tailStdin = function(readStream, noOfLines) {
   const stdinLines = [];
   readStream.on("data", data => {
     stdinLines.push(
@@ -33,9 +18,30 @@ const tail = function(cmdArgs, fsUtils, printers) {
     );
   });
   readStream.on("end", () => {
-    lastLines = getLastLines(stdinLines, +noOfLines);
-    printers({ error, lastLines });
+    printers({ error: "", lastLines: getLastLines(stdinLines, noOfLines) });
   });
+};
+
+const tail = function(cmdArgs, fsUtils, printers) {
+  const userOptions = filterUserOptions(cmdArgs);
+  const { noOfLines, filePath, inputError } = parseUserOptions(userOptions);
+  if (inputError) {
+    printers({ error: inputError, lastLines: "" });
+    return;
+  }
+  if (filePath) {
+    const { fileError, fileContent } = loadFile(filePath, fsUtils);
+    if (fileError) {
+      printers({ error: fileError, lastLines: "" });
+      return;
+    }
+    printers({
+      error: "",
+      lastLines: getLastLines(fileContent, +noOfLines)
+    });
+    return;
+  }
+  tailStdin(fsUtils.readStream, +noOfLines);
 };
 
 module.exports = { tail };

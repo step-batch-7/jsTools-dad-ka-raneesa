@@ -1,16 +1,19 @@
-"use strict";
+'use strict';
 
 const filterUserOptions = function(cmdArgs) {
-  let [, , ...userOptions] = [...cmdArgs];
+  const [, , ...userOptions] = [...cmdArgs];
   return userOptions;
 };
 
 const parseUserOptions = function(userOptions) {
+  const firstIndex = 0;
+  const secondIndex = 1;
+  const thirdIndex = 2;
   let noOfLines = 10;
-  let filePath = userOptions[0];
-  if (userOptions[0] == "-n") {
-    noOfLines = userOptions[1];
-    filePath = userOptions[2];
+  let filePath = userOptions[firstIndex];
+  if (userOptions[firstIndex] === '-n') {
+    noOfLines = userOptions[secondIndex];
+    filePath = userOptions[thirdIndex];
   }
   return { filePath, noOfLines };
 };
@@ -18,18 +21,18 @@ const parseUserOptions = function(userOptions) {
 const loadFile = function(filePath, fsUtils) {
   const { isFileExist, reader } = fsUtils;
   if (!isFileExist(filePath)) {
-    let errorMsg = "no such file or directory";
+    const errorMsg = 'no such file or directory';
     const fileError = `tail: ${filePath}: ${errorMsg}`;
     return { fileError };
   }
-  let fileContent = reader(filePath, "utf8");
-  fileContent = fileContent.split("\n");
+  let fileContent = reader(filePath, 'utf8');
+  fileContent = fileContent.split('\n');
   return { fileContent };
 };
 
 const getLastLines = function(fileContent, noOfLines) {
   const count = Math.abs(noOfLines);
-  let slicedLines = fileContent.slice(-count).join("\n");
+  const slicedLines = fileContent.slice(-count).join('\n');
   return slicedLines;
 };
 

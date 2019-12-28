@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-const fs = require("fs");
-const { stdin, stdout, stderr } = require("process");
-const { tail } = require("./src/performTail");
+const fs = require('fs');
+const { stdin, stdout, stderr } = require('process');
+const { tail } = require('./src/performTail');
 
 const tailOutPutPrinters = function({ error, lastLines }) {
   stderr.write(error);

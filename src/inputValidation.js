@@ -1,35 +1,42 @@
-"use Strict";
+'use Strict';
 
 const validateOffset = function(offset) {
   if (isNaN(+offset)) {
     return `tail: illegal offset -- ${offset}`;
   }
-  return "";
+  return '';
 };
 
-const validateOptionAndOffset = function(option, offset) {
-  if (!(option == "-n")) {
-    let illegalOption = option.slice(1, 2);
-    if (option.slice(0, 2) == "-n") {
-      illegalOption = option.slice(2);
+const validateOptionAndOffset = function(args) {
+  const { option, offset, startIndex, startRange, endRange } = args;
+  if (!(option === '-n')) {
+    let illegalOption = option.slice(startRange, endRange);
+    if (option.slice(startIndex, endRange) === '-n') {
+      illegalOption = option.slice(endRange);
     }
-    const usage = `usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`;
+    const tailOptions = '[-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
+    const usage = `usage: tail ${tailOptions}`;
     const err = `tail: illegal option -- ${illegalOption}\n${usage}`;
     return err;
   }
   return validateOffset(offset);
 };
 
-const isAnOption = arg => {
-  return arg[0] == "-" && arg.length > 1;
+const isAnOption = (arg, startIndex, startRange) => {
+  return arg[startIndex] === '-' && arg.length > startRange;
 };
 
 const validateUserOptions = function(userOptions) {
-  const option = userOptions[0];
-  if (isAnOption(option)) {
-    return validateOptionAndOffset(option, userOptions[1]);
+  const startIndex = 0;
+  const startRange = 1;
+  const endRange = 2;
+  const option = userOptions[startIndex];
+  if (isAnOption(option, startIndex, startRange)) {
+    const offset = userOptions[startRange];
+    const args = { option, offset, startIndex, startRange, endRange };
+    return validateOptionAndOffset(args);
   }
-  return "";
+  return '';
 };
 
 module.exports = { validateUserOptions };

@@ -6,6 +6,7 @@ const {
   loadFile,
   getLastLines
 } = require("./tailLib.js");
+const { validateUserOptions } = require("./inputValidation");
 
 const tailStdin = function(readStream, noOfLines) {
   const stdinLines = [];
@@ -24,11 +25,14 @@ const tailStdin = function(readStream, noOfLines) {
 
 const tail = function(cmdArgs, fsUtils, printers) {
   const userOptions = filterUserOptions(cmdArgs);
-  const { noOfLines, filePath, inputError } = parseUserOptions(userOptions);
-  if (inputError) {
-    printers({ error: inputError, lastLines: "" });
-    return;
+  if (userOptions[0]) {
+    const inputError = validateUserOptions(userOptions);
+    if (inputError) {
+      printers({ error: inputError, lastLines: "" });
+      return;
+    }
   }
+  const { noOfLines, filePath } = parseUserOptions(userOptions);
   if (filePath) {
     const { fileError, fileContent } = loadFile(filePath, fsUtils);
     if (fileError) {

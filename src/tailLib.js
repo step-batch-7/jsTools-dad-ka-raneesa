@@ -11,8 +11,6 @@ const parseUserOptions = function(userOptions) {
   if (userOptions[0] == "-n") {
     noOfLines = userOptions[1];
     filePath = userOptions[2];
-    if (isNaN(+noOfLines))
-      return { inputError: `tail: illegal offset -- ${noOfLines}` };
   }
   return { filePath, noOfLines };
 };

@@ -1,25 +1,25 @@
 'use strict';
 
-const { tail } = require('../src/performTail.js');
 const assert = require('chai').assert;
+const { tail } = require('../src/performTail.js');
 
 describe('tail', function() {
   it('Should give error if given option is not valid', function() {
-    const expected = `tail: illegal option -- g\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`;
-    const printers = function({ error, lastLines }) {
+    const usage = 'tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
+    const expected = `tail: illegal option -- g\nusage: ${usage}`;
+    const printEndResult = function({ error, lastLines }) {
       assert.deepStrictEqual(error, expected);
       assert.strictEqual(lastLines, '');
     };
-    tail(['node', 'tail.js', '-g', 'goodFile'], {}, printers);
+    tail(['node', 'tail.js', '-g', 'goodFile'], {}, printEndResult);
   });
 
-  it('Should give error if given option is not valid', function() {
-    const expected = `tail: illegal option -- dg\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`;
-    const printers = function({ error, lastLines }) {
-      assert.deepStrictEqual(error, expected);
+  it('Should give error if given option with offset is not valid', function() {
+    const printEndResult = function({ error, lastLines }) {
+      assert.deepStrictEqual(error, 'tail: illegal offset -- dg');
       assert.strictEqual(lastLines, '');
     };
-    tail(['node', 'tail.js', '-ndg', 'goodFile'], {}, printers);
+    tail(['node', 'tail.js', '-ndg', 'goodFile'], {}, printEndResult);
   });
 
   it('Should give error if file is not exist', function() {
@@ -27,7 +27,7 @@ describe('tail', function() {
       return false;
     };
 
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.deepStrictEqual(error, 'tail: a.txt: no such file or directory');
       assert.deepStrictEqual(lastLines, '');
     };
@@ -37,7 +37,7 @@ describe('tail', function() {
       {
         isFileExist
       },
-      printers
+      printEndResult
     );
   });
 
@@ -45,7 +45,7 @@ describe('tail', function() {
     const isFileExist = filePath => {
       return false;
     };
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.deepStrictEqual(error, 'tail: illegal offset -- goodFile');
       assert.strictEqual(lastLines, '');
     };
@@ -55,7 +55,7 @@ describe('tail', function() {
       {
         isFileExist
       },
-      printers
+      printEndResult
     );
   });
 
@@ -66,7 +66,7 @@ describe('tail', function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.deepStrictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
     };
@@ -76,7 +76,7 @@ describe('tail', function() {
         isFileExist,
         reader
       },
-      printers
+      printEndResult
     );
   });
 
@@ -87,7 +87,7 @@ describe('tail', function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.deepStrictEqual(lastLines, '1\n2\n3\n4\n5\n6');
     };
@@ -97,7 +97,7 @@ describe('tail', function() {
         isFileExist,
         reader
       },
-      printers
+      printEndResult
     );
   });
 
@@ -108,7 +108,7 @@ describe('tail', function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.strictEqual(lastLines, '');
     };
@@ -118,7 +118,7 @@ describe('tail', function() {
         isFileExist,
         reader
       },
-      printers
+      printEndResult
     );
   });
 
@@ -129,7 +129,7 @@ describe('tail', function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.strictEqual(lastLines, '7\n8\n9\n10\n11\n12');
     };
@@ -139,7 +139,7 @@ describe('tail', function() {
         isFileExist,
         reader
       },
-      printers
+      printEndResult
     );
   });
 
@@ -150,7 +150,7 @@ describe('tail', function() {
     const isFileExist = filePath => {
       return true;
     };
-    const printers = function({ error, lastLines }) {
+    const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.strictEqual(lastLines, '1\n2\n3\n4');
     };
@@ -160,7 +160,7 @@ describe('tail', function() {
         isFileExist,
         reader
       },
-      printers
+      printEndResult
     );
   });
 });

@@ -1,13 +1,7 @@
 'use strict';
 
-const {
-  filterUserOptions,
-  parseUserOptions,
-  loadFile,
-  getLastLines
-} = require('../src/tailLib');
-
 const assert = require('chai').assert;
+const { filterUserOptions, loadFile, getLastLines } = require('../src/tailLib');
 
 describe('filterUserOptions', function() {
   it('Should give file name in an array', function() {
@@ -21,20 +15,6 @@ describe('filterUserOptions', function() {
   });
 });
 
-describe('parseUserOptions', function() {
-  it('Should give file name in object', function() {
-    const actual = parseUserOptions(['a.txt']);
-    const expected = { noOfLines: 10, filePath: 'a.txt' };
-    assert.deepStrictEqual(actual, expected);
-  });
-
-  it('Should give no of line and file name in object', function() {
-    const actual = parseUserOptions(['-n', '8', 'a.txt']);
-    const expected = { noOfLines: '8', filePath: 'a.txt' };
-    assert.deepStrictEqual(actual, expected);
-  });
-});
-
 describe('loadFile', function() {
   it('Should give error if file not present', function() {
     const isFileExist = filePath => {
@@ -42,7 +22,7 @@ describe('loadFile', function() {
     };
     const utils = { isFileExist };
     assert.deepStrictEqual(loadFile('a.txt', utils), {
-      fileError: `tail: a.txt: no such file or directory`
+      fileError: 'tail: a.txt: no such file or directory'
     });
   });
 

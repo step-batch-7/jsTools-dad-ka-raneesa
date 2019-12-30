@@ -5,19 +5,6 @@ const filterUserOptions = function(cmdArgs) {
   return userOptions;
 };
 
-const parseUserOptions = function(userOptions) {
-  const firstIndex = 0;
-  const secondIndex = 1;
-  const thirdIndex = 2;
-  let noOfLines = 10;
-  let filePath = userOptions[firstIndex];
-  if (userOptions[firstIndex] === '-n') {
-    noOfLines = userOptions[secondIndex];
-    filePath = userOptions[thirdIndex];
-  }
-  return { filePath, noOfLines };
-};
-
 const loadFile = function(filePath, fsUtils) {
   const { isFileExist, reader } = fsUtils;
   if (!isFileExist(filePath)) {
@@ -38,7 +25,6 @@ const getLastLines = function(fileContent, noOfLines) {
 
 module.exports = {
   filterUserOptions,
-  parseUserOptions,
   loadFile,
   getLastLines
 };

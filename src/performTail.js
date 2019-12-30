@@ -1,14 +1,9 @@
 'use strict';
 
-const {
-  filterUserOptions,
-  parseUserOptions,
-  loadFile,
-  getLastLines
-} = require('./tailLib.js');
-const { validateUserOptions } = require('./inputValidation');
+const { filterUserOptions, loadFile, getLastLines } = require('./tailLib.js');
+const { parseUserOptions } = require('./parseUserOptions');
 
-const tailStdin = function(readStream, noOfLines, print) {
+const tailStdin = function(readStream, linesRequired, printEndResult) {
   const stdinLines = [];
   readStream.on('data', data => {
     stdinLines.push(
@@ -19,39 +14,40 @@ const tailStdin = function(readStream, noOfLines, print) {
     );
   });
   readStream.on('end', () => {
-    print({ error: '', lastLines: getLastLines(stdinLines, noOfLines) });
+    printEndResult({
+      error: '',
+      lastLines: getLastLines(stdinLines, linesRequired)
+    });
   });
 };
 
 const readFileAndCut = function(args) {
-  const { noOfLines, filePath, fsUtils, print } = args;
+  const { linesRequired, filePath, fsUtils, printEndResult } = args;
   if (filePath) {
     const { fileError, fileContent } = loadFile(filePath, fsUtils);
     if (fileError) {
-      print({ error: fileError, lastLines: '' });
+      printEndResult({ error: fileError, lastLines: '' });
       return;
     }
-    print({
+    printEndResult({
       error: '',
-      lastLines: getLastLines(fileContent, +noOfLines)
+      lastLines: getLastLines(fileContent, +linesRequired)
     });
     return;
   }
-  tailStdin(fsUtils.readStream, +noOfLines, print);
+  tailStdin(fsUtils.readStream, +linesRequired, printEndResult);
 };
 
-const tail = function(cmdArgs, fsUtils, print) {
+const tail = function(cmdArgs, fsUtils, printEndResult) {
   const userOptions = filterUserOptions(cmdArgs);
-  const startIndex = 0;
-  if (userOptions[startIndex]) {
-    const inputError = validateUserOptions(userOptions);
-    if (inputError) {
-      print({ error: inputError, lastLines: '' });
-      return;
-    }
+  const tailOptions = parseUserOptions(userOptions);
+  if (tailOptions.error) {
+    printEndResult({ error: tailOptions.error, lastLines: '' });
+    return;
   }
-  const { noOfLines, filePath } = parseUserOptions(userOptions);
-  readFileAndCut({ noOfLines, filePath, fsUtils, print });
+  const linesRequired = tailOptions.linesRequired;
+  const filePath = tailOptions.filePath;
+  readFileAndCut({ linesRequired, filePath, fsUtils, printEndResult });
 };
 
 module.exports = { tail };

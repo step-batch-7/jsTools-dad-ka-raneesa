@@ -8,7 +8,7 @@ const {
 } = require('./tailLib.js');
 const { validateUserOptions } = require('./inputValidation');
 
-const tailStdin = function(readStream, noOfLines, printers) {
+const tailStdin = function(readStream, noOfLines, print) {
   const stdinLines = [];
   readStream.on('data', data => {
     stdinLines.push(
@@ -19,39 +19,39 @@ const tailStdin = function(readStream, noOfLines, printers) {
     );
   });
   readStream.on('end', () => {
-    printers({ error: '', lastLines: getLastLines(stdinLines, noOfLines) });
+    print({ error: '', lastLines: getLastLines(stdinLines, noOfLines) });
   });
 };
 
-const checkFileAndRead = function(args) {
-  const { noOfLines, filePath, fsUtils, printers } = args;
+const readFileAndCut = function(args) {
+  const { noOfLines, filePath, fsUtils, print } = args;
   if (filePath) {
     const { fileError, fileContent } = loadFile(filePath, fsUtils);
     if (fileError) {
-      printers({ error: fileError, lastLines: '' });
+      print({ error: fileError, lastLines: '' });
       return;
     }
-    printers({
+    print({
       error: '',
       lastLines: getLastLines(fileContent, +noOfLines)
     });
     return;
   }
-  tailStdin(fsUtils.readStream, +noOfLines, printers);
+  tailStdin(fsUtils.readStream, +noOfLines, print);
 };
 
-const tail = function(cmdArgs, fsUtils, printers) {
+const tail = function(cmdArgs, fsUtils, print) {
   const userOptions = filterUserOptions(cmdArgs);
   const startIndex = 0;
   if (userOptions[startIndex]) {
     const inputError = validateUserOptions(userOptions);
     if (inputError) {
-      printers({ error: inputError, lastLines: '' });
+      print({ error: inputError, lastLines: '' });
       return;
     }
   }
   const { noOfLines, filePath } = parseUserOptions(userOptions);
-  checkFileAndRead({ noOfLines, filePath, fsUtils, printers });
+  readFileAndCut({ noOfLines, filePath, fsUtils, print });
 };
 
 module.exports = { tail };

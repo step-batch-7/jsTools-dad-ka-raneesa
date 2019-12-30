@@ -15,8 +15,9 @@
     "nyc": "^14.1.1"
   },
   "scripts": {
-    "test": "mocha",
-    "alltests": "nyc mocha && ./runAppTests.sh appTests/*.test"
+    "test": "mocha && eslint src test",
+    "appTest": "./runAppTests.sh appTests/*.test",
+    "alltests": "npm test && npm run appTest"
   },
   "repository": {
     "type": "git",

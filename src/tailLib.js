@@ -16,7 +16,7 @@ const getErrorMessage = (errCode, filePath) => {
 const loadAndCutLines = function(tailOptions, inputStream, callBack) {
   inputStream.on('error', error => {
     const errMsg = getErrorMessage(error.code, tailOptions.filePath);
-    callBack({ errMsg });
+    callBack({ errMsg, lastLines: '' });
   });
 
   let lines = '';
@@ -25,7 +25,7 @@ const loadAndCutLines = function(tailOptions, inputStream, callBack) {
   });
   inputStream.on('end', () => {
     const lastLines = getLastLines(tailOptions.linesRequired, lines);
-    callBack({ lastLines });
+    callBack({ lastLines, errMsg: '' });
   });
 };
 

@@ -15,7 +15,7 @@ const tail = function(
     return;
   }
   const completeCallBack = function({ errMsg, lastLines }) {
-    if (errMsg !== undefined) {
+    if (errMsg) {
       printEndResult({ error: errMsg, lastLines: '' });
       return;
     }

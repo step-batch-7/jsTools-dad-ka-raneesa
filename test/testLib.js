@@ -23,7 +23,7 @@ describe('loadAndCutLines', function() {
     const inputStream = new EventEmitter();
     loadAndCutLines({ filePath: 'badFile' }, inputStream, completeCallback);
     inputStream.emit('error', { code: 'ENOENT' });
-    assert.ok(completeCallback.calledWith({ errMsg }));
+    assert.ok(completeCallback.calledWith({ errMsg, lastLines: '' }));
   });
 
   it('Should give error if file permission is denied', function() {
@@ -32,7 +32,7 @@ describe('loadAndCutLines', function() {
     const inputStream = new EventEmitter();
     loadAndCutLines({ filePath: 'badFile' }, inputStream, completeCallback);
     inputStream.emit('error', { code: 'EACCES' });
-    assert.ok(completeCallback.calledWith({ errMsg }));
+    assert.ok(completeCallback.calledWith({ errMsg, lastLines: '' }));
   });
 
   it('Should give error as empty string if we give directory only', function() {
@@ -41,7 +41,7 @@ describe('loadAndCutLines', function() {
     const inputStream = new EventEmitter();
     loadAndCutLines({ filePath: 'badFile' }, inputStream, completeCallback);
     inputStream.emit('error', { code: 'EISDIR' });
-    assert.ok(completeCallback.calledWith({ errMsg }));
+    assert.ok(completeCallback.calledWith({ errMsg, lastLines: '' }));
   });
 
   it('Should should give empty string if file is empty ', function() {
@@ -54,7 +54,7 @@ describe('loadAndCutLines', function() {
     );
     inputStream.emit('data', '');
     inputStream.emit('end');
-    assert.ok(completeCallback.calledWith({ lastLines: '' }));
+    assert.ok(completeCallback.calledWith({ lastLines: '', errMsg: '' }));
   });
 
   it('should give last 10 lines if data has more than 10 lines', () => {
@@ -68,7 +68,7 @@ describe('loadAndCutLines', function() {
     );
     inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
     inputStream.emit('end');
-    assert.ok(completeCallback.calledWith({ lastLines }));
+    assert.ok(completeCallback.calledWith({ lastLines, errMsg: '' }));
   });
 
   it('should give whole lines if data has less than 10 lines', () => {
@@ -82,7 +82,7 @@ describe('loadAndCutLines', function() {
     );
     inputStream.emit('data', '1\n2\n3\n4\n5');
     inputStream.emit('end');
-    assert.ok(completeCallback.calledWith({ lastLines }));
+    assert.ok(completeCallback.calledWith({ lastLines, errMsg: '' }));
   });
 
   it('should give last 6 lines if data has more than given count', () => {
@@ -99,7 +99,7 @@ describe('loadAndCutLines', function() {
     );
     inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8');
     inputStream.emit('end');
-    assert.ok(completeCallback.calledWith({ lastLines }));
+    assert.ok(completeCallback.calledWith({ lastLines, errMsg: '' }));
   });
 
   it('should give whole lines if data has less than given count', () => {
@@ -113,6 +113,6 @@ describe('loadAndCutLines', function() {
     );
     inputStream.emit('data', '1\n2\n3\n4\n5');
     inputStream.emit('end');
-    assert.ok(completeCallback.calledWith({ lastLines }));
+    assert.ok(completeCallback.calledWith({ lastLines, errMsg: '' }));
   });
 });

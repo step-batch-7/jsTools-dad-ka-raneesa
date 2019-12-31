@@ -3,7 +3,11 @@
 const { filterUserOptions, loadAndCutLines } = require('./tailLib.js');
 const { parseUserOptions } = require('./parseUserOptions');
 
-const tail = function(cmdArgs, { createReadStream, stdin }, printEndResult) {
+const tail = function(
+  cmdArgs,
+  { createReadStream, createStdinStream },
+  printEndResult
+) {
   const userOptions = filterUserOptions(cmdArgs);
   const tailOptions = parseUserOptions(userOptions);
   if (tailOptions.error) {
@@ -17,10 +21,10 @@ const tail = function(cmdArgs, { createReadStream, stdin }, printEndResult) {
     }
     printEndResult({ error: '', lastLines });
   };
-  let inputStream = stdin;
-  if (tailOptions.filePath) {
-    inputStream = createReadStream(tailOptions.filePath);
-  }
+
+  const inputStream = tailOptions.filePath
+    ? createReadStream(tailOptions.filePath)
+    : createStdinStream();
   loadAndCutLines(tailOptions, inputStream, completeCallBack);
 };
 

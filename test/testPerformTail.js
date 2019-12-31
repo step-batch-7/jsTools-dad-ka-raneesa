@@ -135,7 +135,8 @@ describe('tail', function() {
     it('Should should give empty string if stdin is empty ', function() {
       const printEndResult = sinon.fake();
       const stdin = new EventEmitter();
-      tail(['node', 'tail.js'], { stdin }, printEndResult);
+      const createStdinStream = sinon.fake.returns(stdin);
+      tail(['node', 'tail.js'], { createStdinStream }, printEndResult);
       stdin.emit('data', '');
       stdin.emit('end');
       assert.ok(printEndResult.calledWith({ error: '', lastLines: '' }));
@@ -145,7 +146,8 @@ describe('tail', function() {
       const printEndResult = sinon.fake();
       const lastLines = '3\n4\n5\n6\n7\n8\n9\n10\n11\n12';
       const stdin = new EventEmitter();
-      tail(['node', 'tail.js'], { stdin }, printEndResult);
+      const createStdinStream = sinon.fake.returns(stdin);
+      tail(['node', 'tail.js'], { createStdinStream }, printEndResult);
       stdin.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
       stdin.emit('end');
       assert.ok(printEndResult.calledWith({ error: '', lastLines }));
@@ -155,7 +157,8 @@ describe('tail', function() {
       const printEndResult = sinon.fake();
       const lastLines = '1\n2\n3\n4\n5\n6';
       const stdin = new EventEmitter();
-      tail(['node', 'tail.js'], { stdin }, printEndResult);
+      const createStdinStream = sinon.fake.returns(stdin);
+      tail(['node', 'tail.js'], { createStdinStream }, printEndResult);
       stdin.emit('data', '1\n2\n3\n4\n5\n6');
       stdin.emit('end');
       assert.ok(printEndResult.calledWith({ error: '', lastLines }));
@@ -165,7 +168,12 @@ describe('tail', function() {
       const printEndResult = sinon.fake();
       const lastLines = '7\n8\n9\n10\n11\n12';
       const stdin = new EventEmitter();
-      tail(['node', 'tail.js', '-n', '6'], { stdin }, printEndResult);
+      const createStdinStream = sinon.fake.returns(stdin);
+      tail(
+        ['node', 'tail.js', '-n', '6'],
+        { createStdinStream },
+        printEndResult
+      );
       stdin.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
       stdin.emit('end');
       assert.ok(printEndResult.calledWith({ error: '', lastLines }));
@@ -175,7 +183,12 @@ describe('tail', function() {
       const printEndResult = sinon.fake();
       const lastLines = '1\n2\n3\n4';
       const stdin = new EventEmitter();
-      tail(['node', 'tail.js', '-n', '6'], { stdin }, printEndResult);
+      const createStdinStream = sinon.fake.returns(stdin);
+      tail(
+        ['node', 'tail.js', '-n', '6'],
+        { createStdinStream },
+        printEndResult
+      );
       stdin.emit('data', '1\n2\n3\n4');
       stdin.emit('end');
       assert.ok(printEndResult.calledWith({ error: '', lastLines }));

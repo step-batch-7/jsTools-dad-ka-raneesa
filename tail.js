@@ -9,8 +9,10 @@ const printEndResult = function({ error, lastLines }) {
   stdout.write(lastLines);
 };
 
+const createStdinStream = () => stdin;
+
 const main = function(cmdArgs) {
-  tail(cmdArgs, { createReadStream, stdin }, printEndResult);
+  tail(cmdArgs, { createReadStream, createStdinStream }, printEndResult);
 };
 
 main(process.argv);

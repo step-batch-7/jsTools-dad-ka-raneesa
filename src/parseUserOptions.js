@@ -43,7 +43,7 @@ const isAnOption = function(arg) {
   );
 };
 
-const validateOption = function(option) {
+const parseOption = function(option) {
   const [, ...illegalOption] = option;
   const tailOptions = '[-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
   const usage = `usage: tail ${tailOptions}`;
@@ -57,7 +57,7 @@ const parseUserOptions = function(userOptions) {
     return { error: '', filePath: option, linesRequired: 10 };
   }
   if (!isACountOption(option)) {
-    return { error: validateOption(option), filePath: '', linesRequired: '' };
+    return { error: parseOption(option), filePath: '', linesRequired: '' };
   }
   return parseByCheck(userOptions);
 };

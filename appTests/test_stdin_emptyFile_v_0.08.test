@@ -1,0 +1,1 @@
+(cat ./appTests/emptyFile.txt | node tail.js )

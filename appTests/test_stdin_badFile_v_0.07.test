@@ -1,0 +1,2 @@
+(cat ./appTests/badFile.txt | node tail.js)
+cat: ./appTests/badFile.txt: No such file or directory

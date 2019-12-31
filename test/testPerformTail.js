@@ -114,6 +114,21 @@ describe('tail', function() {
       inputStream.emit('end');
       assert.ok(printEndResult.calledWith({ error: '', lastLines }));
     });
+
+    it('should give last 6 lines if option and offset is attached', function() {
+      const printEndResult = sinon.fake();
+      const lastLines = '7\n8\n9\n10\n11\n12';
+      const inputStream = new EventEmitter();
+      const createReadStream = sinon.fake.returns(inputStream);
+      tail(
+        ['node', 'tail.js', '-n6', 'a.txt'],
+        { createReadStream },
+        printEndResult
+      );
+      inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+      inputStream.emit('end');
+      assert.ok(printEndResult.calledWith({ error: '', lastLines }));
+    });
   });
 
   describe('stdin is given', function() {

@@ -1,6 +1,8 @@
 'use strict';
 
+const sinon = require('sinon');
 const assert = require('chai').assert;
+const { EventEmitter } = require('events');
 const { tail } = require('../src/performTail.js');
 
 describe('tail', function() {
@@ -22,145 +24,88 @@ describe('tail', function() {
     tail(['node', 'tail.js', '-ndg', 'goodFile'], {}, printEndResult);
   });
 
-  it('Should give error if file is not exist', function() {
-    const isFileExist = filePath => {
-      return false;
-    };
-
+  it('should give error to callback if error event is occurred', function() {
     const printEndResult = function({ error, lastLines }) {
-      assert.deepStrictEqual(error, 'tail: a.txt: no such file or directory');
-      assert.deepStrictEqual(lastLines, '');
+      assert.strictEqual(error, 'tail: badFile: No such file or directory');
+      assert.strictEqual(lastLines, '');
     };
-
-    tail(
-      ['node', 'tail.js', 'a.txt'],
-      {
-        isFileExist
-      },
-      printEndResult
-    );
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'badFile'], createReadStream, printEndResult);
+    inputStream.emit('error', { code: 'ENOENT' });
   });
 
-  it('should give error message when only option is mentioned without the count', function() {
-    const isFileExist = filePath => {
-      return false;
-    };
+  it('should give err if option is mentioned without the count', function() {
     const printEndResult = function({ error, lastLines }) {
       assert.deepStrictEqual(error, 'tail: illegal offset -- goodFile');
       assert.strictEqual(lastLines, '');
     };
-
-    tail(
-      ['node', 'tail.js', '-n', 'goodFile'],
-      {
-        isFileExist
-      },
-      printEndResult
-    );
+    tail(['node', 'tail.js', '-n', 'goodFile'], '', printEndResult);
   });
 
-  it('Should should give 10 last lines of a file if file has more than 10 lines ', function() {
-    const reader = (filePath, encoding) => {
-      return '3\n4\n5\n6\n7\n8\n9\n10\n11\n12';
+  it('should give error if file is not readable', function() {
+    const displayResult = function({ error, lastLines }) {
+      assert.strictEqual(error, 'tail: sample.txt: Permission denied');
+      assert.strictEqual(lastLines, '');
     };
-    const isFileExist = filePath => {
-      return true;
-    };
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.deepStrictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
-    };
-    tail(
-      ['node', 'tail.js', 'a.txt'],
-      {
-        isFileExist,
-        reader
-      },
-      printEndResult
-    );
-  });
-
-  it('Should should give whole lines of a file if file has less than 10 lines ', function() {
-    const reader = (filePath, encoding) => {
-      return '1\n2\n3\n4\n5\n6';
-    };
-    const isFileExist = filePath => {
-      return true;
-    };
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.deepStrictEqual(lastLines, '1\n2\n3\n4\n5\n6');
-    };
-    tail(
-      ['node', 'tail.js', 'a.txt'],
-      {
-        isFileExist,
-        reader
-      },
-      printEndResult
-    );
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'sample.txt'], createReadStream, displayResult);
+    inputStream.emit('error', { code: 'EACCES' });
   });
 
   it('Should should give empty string if file is empty ', function() {
-    const reader = (filePath, encoding) => {
-      return '';
-    };
-    const isFileExist = filePath => {
-      return true;
-    };
     const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.strictEqual(lastLines, '');
     };
-    tail(
-      ['node', 'tail.js', 'a.txt'],
-      {
-        isFileExist,
-        reader
-      },
-      printEndResult
-    );
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
+    inputStream.emit('data', '');
   });
 
-  it('Should should give 6 last lines of a file if file has more than given 6 lines in command ', function() {
-    const reader = (filePath, encoding) => {
-      return '7\n8\n9\n10\n11\n12';
+  it('should give last 10 lines if data has more than 10 lines', function() {
+    const printEndResult = function({ error, lastLines }) {
+      assert.strictEqual(error, '');
+      assert.deepStrictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
     };
-    const isFileExist = filePath => {
-      return true;
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
+    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+  });
+
+  it('should give whole lines if data has less than 10 lines', function() {
+    const printEndResult = function({ error, lastLines }) {
+      assert.strictEqual(error, '');
+      assert.deepStrictEqual(lastLines, '1\n2\n3\n4\n5\n6');
     };
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
+    inputStream.emit('data', '1\n2\n3\n4\n5\n6');
+  });
+
+  it('should give last 6 lines if data has more than given count', function() {
     const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.strictEqual(lastLines, '7\n8\n9\n10\n11\n12');
     };
-    tail(
-      ['node', 'tail.js', 'a.txt'],
-      {
-        isFileExist,
-        reader
-      },
-      printEndResult
-    );
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
+    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
   });
 
-  it('Should should give whole lines of a file if file has less than given 6 lines in command ', function() {
-    const reader = filePath => {
-      return '1\n2\n3\n4';
-    };
-    const isFileExist = filePath => {
-      return true;
-    };
+  it('should give whole lines if data has less than given count', function() {
     const printEndResult = function({ error, lastLines }) {
       assert.strictEqual(error, '');
       assert.strictEqual(lastLines, '1\n2\n3\n4');
     };
-    tail(
-      ['node', 'tail.js', 'a.txt'],
-      {
-        isFileExist,
-        reader
-      },
-      printEndResult
-    );
+    const inputStream = new EventEmitter();
+    const createReadStream = sinon.fake.returns(inputStream);
+    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
+    inputStream.emit('data', '1\n2\n3\n4');
   });
 });

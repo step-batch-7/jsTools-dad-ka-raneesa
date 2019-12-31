@@ -1,7 +1,7 @@
 'use strict';
-
+const { EventEmitter } = require('events');
 const assert = require('chai').assert;
-const { filterUserOptions, loadFile, getLastLines } = require('../src/tailLib');
+const { filterUserOptions, loadLines } = require('../src/tailLib');
 
 describe('filterUserOptions', function() {
   it('Should give file name in an array', function() {
@@ -15,61 +15,98 @@ describe('filterUserOptions', function() {
   });
 });
 
-describe('loadFile', function() {
-  it('Should give error if file not present', function() {
-    const isFileExist = filePath => {
-      return false;
+describe('loadLines', function() {
+  it('Should give error if file is not present', function() {
+    const completeCallback = function({ errMsg, lastLines }) {
+      assert.strictEqual(errMsg, 'tail: badFile: No such file or directory');
+      assert.isUndefined(lastLines);
     };
-    const utils = { isFileExist };
-    assert.deepStrictEqual(loadFile('a.txt', utils), {
-      fileError: 'tail: a.txt: no such file or directory'
-    });
+    const inputStream = new EventEmitter();
+    loadLines({ filePath: 'badFile' }, inputStream, completeCallback);
+    inputStream.emit('error', { code: 'ENOENT' });
   });
 
-  it('Should give content of file if file present', function() {
-    const isFileExist = filePath => {
-      return true;
+  it('Should give error if file permission is denied', function() {
+    const completeCallback = function({ errMsg, lastLines }) {
+      assert.strictEqual(errMsg, 'tail: badFile: Permission denied');
+      assert.isUndefined(lastLines);
     };
+    const inputStream = new EventEmitter();
+    loadLines({ filePath: 'badFile' }, inputStream, completeCallback);
+    inputStream.emit('error', { code: 'EACCES' });
+  });
 
-    const reader = (filePath, encoding) => {
-      return '1\n2\n3\n4\n5';
+  it('Should should give empty string if file is empty ', function() {
+    const printEndResult = function({ error, lastLines }) {
+      assert.strictEqual(error, '');
+      assert.strictEqual(lastLines, '');
     };
-    const utils = { isFileExist, reader, encoding: 'utf8' };
-    assert.deepStrictEqual(loadFile('a.txt', utils), {
-      fileContent: ['1', '2', '3', '4', '5']
-    });
-  });
-});
-
-describe('getLastLines', function() {
-  it('should give last ten line of file content if lines are more than 10', function() {
-    const fileContent = [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12'
-    ];
-    let expected = '3\n4\n5\n6\n7\n8\n9\n10\n11\n12';
-    assert.strictEqual(getLastLines(fileContent, 10), expected);
+    const inputStream = new EventEmitter();
+    loadLines(
+      { filePath: 'a.txt', linesRequired: '10' },
+      inputStream,
+      printEndResult
+    );
+    inputStream.emit('data', '');
   });
 
-  it('should give last total lines of file content if lines are less than 10', function() {
-    const fileContent = ['1', '2', '3', '4', '5'];
-    let expected = '1\n2\n3\n4\n5';
-    assert.strictEqual(getLastLines(fileContent, 10), expected);
+  it('should give last 10 lines if data has more than 10 lines', () => {
+    const completeCallback = function({ errMsg, lastLines }) {
+      assert.isUndefined(errMsg);
+      assert.strictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    };
+    const inputStream = new EventEmitter();
+    loadLines(
+      { filePath: 'a.txt', linesRequired: '10' },
+      inputStream,
+      completeCallback
+    );
+    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    inputStream.emit('end');
   });
 
-  it('should give last given no of lines of file content if tail count is given', function() {
-    let fileContent = ['1', '2', '3', '4', '5', '6', '7', '8'];
-    let expected = '4\n5\n6\n7\n8';
-    assert.strictEqual(getLastLines(fileContent, 5), expected);
+  it('should give whole lines if data has less than 10 lines', () => {
+    const completeCallback = function({ errMsg, lastLines }) {
+      assert.isUndefined(errMsg);
+      assert.strictEqual(lastLines, '1\n2\n3\n4\n5');
+    };
+    const inputStream = new EventEmitter();
+    loadLines(
+      { filePath: 'a.txt', linesRequired: '10' },
+      inputStream,
+      completeCallback
+    );
+    inputStream.emit('data', '1\n2\n3\n4\n5');
+    inputStream.emit('end');
+  });
+
+  it('should give last 6 lines if data has more than given count', () => {
+    const completeCallback = function({ errMsg, lastLines }) {
+      assert.isUndefined(errMsg);
+      assert.strictEqual(lastLines, '3\n4\n5\n6\n7\n8');
+    };
+    const inputStream = new EventEmitter();
+    loadLines(
+      { filePath: 'a.txt', linesRequired: '6' },
+      inputStream,
+      completeCallback
+    );
+    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8');
+    inputStream.emit('end');
+  });
+
+  it('should give whole lines if data has less than given count', () => {
+    const completeCallback = function({ errMsg, lastLines }) {
+      assert.isUndefined(errMsg);
+      assert.strictEqual(lastLines, '1\n2\n3\n4\n5');
+    };
+    const inputStream = new EventEmitter();
+    loadLines(
+      { filePath: 'a.txt', linesRequired: '8' },
+      inputStream,
+      completeCallback
+    );
+    inputStream.emit('data', '1\n2\n3\n4\n5');
+    inputStream.emit('end');
   });
 });

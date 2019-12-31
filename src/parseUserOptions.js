@@ -6,7 +6,7 @@ const isOffsetSeparate = function(option) {
 };
 
 const parseOffset = function(num) {
-  if (isNaN(parseInt(num))) {
+  if (isNaN(+num)) {
     return { error: `tail: illegal offset -- ${num}`, linesRequired: '' };
   }
   return { error: '', linesRequired: `${num}` };
@@ -30,12 +30,11 @@ const parseByCheck = function(options) {
 };
 
 const isACountOption = function(arg) {
-  const linesRequired = parseInt(arg);
-  return arg.startsWith('-n') || Number.isInteger(linesRequired);
+  return arg.startsWith('-n') || Number.isInteger(+arg);
 };
 
 const isAnOption = function(arg) {
-  const linesRequired = parseInt(arg);
+  const linesRequired = +arg;
   return (
     arg.startsWith('-') ||
     arg.startsWith('+') ||
@@ -52,6 +51,14 @@ const parseOption = function(option) {
 };
 
 const parseUserOptions = function(userOptions) {
+  const length = 0;
+  if (userOptions.length === length) {
+    return {
+      error: '',
+      filePath: '',
+      linesRequired: 10
+    };
+  }
   const [option] = userOptions;
   if (!isAnOption(option)) {
     return { error: '', filePath: option, linesRequired: 10 };

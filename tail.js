@@ -1,7 +1,7 @@
 'use strict';
 
-const fs = require('fs');
-const { stdout, stderr } = require('process');
+const { createReadStream } = require('fs');
+const { stdin, stdout, stderr } = require('process');
 const { tail } = require('./src/performTail');
 
 const printEndResult = function({ error, lastLines }) {
@@ -10,7 +10,7 @@ const printEndResult = function({ error, lastLines }) {
 };
 
 const main = function(cmdArgs) {
-  tail(cmdArgs, fs.createReadStream, printEndResult);
+  tail(cmdArgs, { createReadStream, stdin }, printEndResult);
 };
 
 main(process.argv);

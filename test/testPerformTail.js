@@ -31,7 +31,7 @@ describe('tail', function() {
     };
     const inputStream = new EventEmitter();
     const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'badFile'], createReadStream, printEndResult);
+    tail(['node', 'tail.js', 'badFile'], { createReadStream }, printEndResult);
     inputStream.emit('error', { code: 'ENOENT' });
   });
 
@@ -50,62 +50,128 @@ describe('tail', function() {
     };
     const inputStream = new EventEmitter();
     const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'sample.txt'], createReadStream, displayResult);
+    tail(
+      ['node', 'tail.js', 'sample.txt'],
+      { createReadStream },
+      displayResult
+    );
     inputStream.emit('error', { code: 'EACCES' });
   });
 
-  it('Should should give empty string if file is empty ', function() {
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.strictEqual(lastLines, '');
-    };
-    const inputStream = new EventEmitter();
-    const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
-    inputStream.emit('data', '');
+  describe('file is given', function() {
+    it('Should should give empty string if file is empty ', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.strictEqual(lastLines, '');
+      };
+      const inputStream = new EventEmitter();
+      const createReadStream = sinon.fake.returns(inputStream);
+      tail(['node', 'tail.js', 'a.txt'], { createReadStream }, printEndResult);
+      inputStream.emit('data', '');
+    });
+
+    it('should give last 10 lines if data has more than 10 lines', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.deepStrictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+      };
+      const inputStream = new EventEmitter();
+      const createReadStream = sinon.fake.returns(inputStream);
+      tail(['node', 'tail.js', 'a.txt'], { createReadStream }, printEndResult);
+      inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    });
+
+    it('should give whole lines if data has less than 10 lines', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.deepStrictEqual(lastLines, '1\n2\n3\n4\n5\n6');
+      };
+      const inputStream = new EventEmitter();
+      const createReadStream = sinon.fake.returns(inputStream);
+      tail(['node', 'tail.js', 'a.txt'], { createReadStream }, printEndResult);
+      inputStream.emit('data', '1\n2\n3\n4\n5\n6');
+    });
+
+    it('should give last 6 lines if data has more than count', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.strictEqual(lastLines, '7\n8\n9\n10\n11\n12');
+      };
+      const inputStream = new EventEmitter();
+      const createReadStream = sinon.fake.returns(inputStream);
+      tail(
+        ['node', 'tail.js', '-n', '6', 'a.txt'],
+        { createReadStream },
+        printEndResult
+      );
+      inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    });
+
+    it('should give whole lines if data has less than given count', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.strictEqual(lastLines, '1\n2\n3\n4');
+      };
+      const inputStream = new EventEmitter();
+      const createReadStream = sinon.fake.returns(inputStream);
+      tail(
+        ['node', 'tail.js', '-n', '6', 'a.txt'],
+        { createReadStream },
+        printEndResult
+      );
+      inputStream.emit('data', '1\n2\n3\n4');
+    });
   });
 
-  it('should give last 10 lines if data has more than 10 lines', function() {
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.deepStrictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
-    };
-    const inputStream = new EventEmitter();
-    const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
-    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
-  });
+  describe('stdin is given', function() {
+    it('Should should give empty string if stdin is empty ', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.strictEqual(lastLines, '');
+      };
+      const stdin = new EventEmitter();
+      tail(['node', 'tail.js'], { stdin }, printEndResult);
+      stdin.emit('data', '');
+    });
 
-  it('should give whole lines if data has less than 10 lines', function() {
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.deepStrictEqual(lastLines, '1\n2\n3\n4\n5\n6');
-    };
-    const inputStream = new EventEmitter();
-    const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
-    inputStream.emit('data', '1\n2\n3\n4\n5\n6');
-  });
+    it('should give last 10 lines if stdin has more than 10 lines', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.deepStrictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+      };
+      const stdin = new EventEmitter();
+      tail(['node', 'tail.js'], { stdin }, printEndResult);
+      stdin.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    });
 
-  it('should give last 6 lines if data has more than given count', function() {
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.strictEqual(lastLines, '7\n8\n9\n10\n11\n12');
-    };
-    const inputStream = new EventEmitter();
-    const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
-    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
-  });
+    it('should give whole lines if stdin has less than 10 lines', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.deepStrictEqual(lastLines, '1\n2\n3\n4\n5\n6');
+      };
+      const stdin = new EventEmitter();
+      tail(['node', 'tail.js'], { stdin }, printEndResult);
+      stdin.emit('data', '1\n2\n3\n4\n5\n6');
+    });
 
-  it('should give whole lines if data has less than given count', function() {
-    const printEndResult = function({ error, lastLines }) {
-      assert.strictEqual(error, '');
-      assert.strictEqual(lastLines, '1\n2\n3\n4');
-    };
-    const inputStream = new EventEmitter();
-    const createReadStream = sinon.fake.returns(inputStream);
-    tail(['node', 'tail.js', 'a.txt'], createReadStream, printEndResult);
-    inputStream.emit('data', '1\n2\n3\n4');
+    it('should give last 6 lines if stdin has more than count', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.strictEqual(lastLines, '7\n8\n9\n10\n11\n12');
+      };
+      const stdin = new EventEmitter();
+      tail(['node', 'tail.js', '-n', '6'], { stdin }, printEndResult);
+      stdin.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    });
+
+    it('should give whole lines if stdin has less than count', function() {
+      const printEndResult = function({ error, lastLines }) {
+        assert.strictEqual(error, '');
+        assert.strictEqual(lastLines, '1\n2\n3\n4');
+      };
+      const stdin = new EventEmitter();
+      tail(['node', 'tail.js', '-n', '6'], { stdin }, printEndResult);
+      stdin.emit('data', '1\n2\n3\n4');
+    });
   });
 });

@@ -3,29 +3,26 @@
 const { filterUserOptions, loadAndCutLines } = require('./tailLib.js');
 const { parseUserOptions } = require('./parseUserOptions');
 
-const tail = function(
-  cmdArgs,
-  { createReadStream, createStdinStream },
-  printEndResult
-) {
+const tail = function(cmdArgs, streams, onCompletion) {
+  const { createReadStream, createStdinStream } = streams;
   const userOptions = filterUserOptions(cmdArgs);
   const tailOptions = parseUserOptions(userOptions);
   if (tailOptions.error) {
-    printEndResult({ error: tailOptions.error, lastLines: '' });
+    onCompletion({ error: tailOptions.error, lastLines: '' });
     return;
   }
-  const completeCallBack = function({ errMsg, lastLines }) {
+  const formatTailOutput = function({ errMsg, lastLines }) {
     if (errMsg) {
-      printEndResult({ error: errMsg, lastLines: '' });
+      onCompletion({ error: errMsg, lastLines: '' });
       return;
     }
-    printEndResult({ error: '', lastLines });
+    onCompletion({ error: '', lastLines });
   };
 
   const inputStream = tailOptions.filePath
     ? createReadStream(tailOptions.filePath)
     : createStdinStream();
-  loadAndCutLines(tailOptions, inputStream, completeCallBack);
+  loadAndCutLines(tailOptions, inputStream, formatTailOutput);
 };
 
 module.exports = { tail };

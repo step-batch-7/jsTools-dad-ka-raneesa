@@ -1,7 +1,7 @@
 'use strict';
 const { EventEmitter } = require('events');
 const assert = require('chai').assert;
-const { filterUserOptions, loadLines } = require('../src/tailLib');
+const { filterUserOptions, loadAndCutLines } = require('../src/tailLib');
 
 describe('filterUserOptions', function() {
   it('Should give file name in an array', function() {
@@ -15,14 +15,14 @@ describe('filterUserOptions', function() {
   });
 });
 
-describe('loadLines', function() {
+describe('loadAndCutLines', function() {
   it('Should give error if file is not present', function() {
     const completeCallback = function({ errMsg, lastLines }) {
       assert.strictEqual(errMsg, 'tail: badFile: No such file or directory');
       assert.isUndefined(lastLines);
     };
     const inputStream = new EventEmitter();
-    loadLines({ filePath: 'badFile' }, inputStream, completeCallback);
+    loadAndCutLines({ filePath: 'badFile' }, inputStream, completeCallback);
     inputStream.emit('error', { code: 'ENOENT' });
   });
 
@@ -32,7 +32,7 @@ describe('loadLines', function() {
       assert.isUndefined(lastLines);
     };
     const inputStream = new EventEmitter();
-    loadLines({ filePath: 'badFile' }, inputStream, completeCallback);
+    loadAndCutLines({ filePath: 'badFile' }, inputStream, completeCallback);
     inputStream.emit('error', { code: 'EACCES' });
   });
 
@@ -42,7 +42,7 @@ describe('loadLines', function() {
       assert.strictEqual(lastLines, '');
     };
     const inputStream = new EventEmitter();
-    loadLines(
+    loadAndCutLines(
       { filePath: 'a.txt', linesRequired: '10' },
       inputStream,
       printEndResult
@@ -56,7 +56,7 @@ describe('loadLines', function() {
       assert.strictEqual(lastLines, '3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
     };
     const inputStream = new EventEmitter();
-    loadLines(
+    loadAndCutLines(
       { filePath: 'a.txt', linesRequired: '10' },
       inputStream,
       completeCallback
@@ -71,7 +71,7 @@ describe('loadLines', function() {
       assert.strictEqual(lastLines, '1\n2\n3\n4\n5');
     };
     const inputStream = new EventEmitter();
-    loadLines(
+    loadAndCutLines(
       { filePath: 'a.txt', linesRequired: '10' },
       inputStream,
       completeCallback
@@ -86,7 +86,7 @@ describe('loadLines', function() {
       assert.strictEqual(lastLines, '3\n4\n5\n6\n7\n8');
     };
     const inputStream = new EventEmitter();
-    loadLines(
+    loadAndCutLines(
       { filePath: 'a.txt', linesRequired: '6' },
       inputStream,
       completeCallback
@@ -101,7 +101,7 @@ describe('loadLines', function() {
       assert.strictEqual(lastLines, '1\n2\n3\n4\n5');
     };
     const inputStream = new EventEmitter();
-    loadLines(
+    loadAndCutLines(
       { filePath: 'a.txt', linesRequired: '8' },
       inputStream,
       completeCallback

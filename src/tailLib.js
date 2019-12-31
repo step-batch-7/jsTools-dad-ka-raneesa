@@ -5,19 +5,7 @@ const filterUserOptions = function(cmdArgs) {
   return userOptions;
 };
 
-// const loadFile = function(filePath, fsUtils) {
-//   const { isFileExist, reader } = fsUtils;
-//   if (!isFileExist(filePath)) {
-//     const errorMsg = 'no such file or directory';
-//     const fileError = `tail: ${filePath}: ${errorMsg}`;
-//     return { fileError };
-//   }
-//   let fileContent = reader(filePath, 'utf8');
-//   fileContent = fileContent.split('\n');
-//   return { fileContent };
-// };
-
-const loadLines = function(tailOptions, inputStream, callBack) {
+const loadAndCutLines = function(tailOptions, inputStream, callBack) {
   const fileErrors = {
     ENOENT: 'No such file or directory',
     EACCES: 'Permission denied'
@@ -47,5 +35,5 @@ const getLastLines = function(linesRequired, lines) {
 
 module.exports = {
   filterUserOptions,
-  loadLines
+  loadAndCutLines
 };

@@ -4,15 +4,18 @@ const filterUserOptions = function(cmdArgs) {
   const [, , ...userOptions] = [...cmdArgs];
   return userOptions;
 };
+const getErrorMessage = (errCode, filePath) => {
+  const fileErrorMsg = {
+    ENOENT: `tail: ${filePath}: No such file or directory`,
+    EACCES: `tail: ${filePath}: Permission denied`,
+    EISDIR: ''
+  };
+  return fileErrorMsg[errCode];
+};
 
 const loadAndCutLines = function(tailOptions, inputStream, callBack) {
-  const fileErrors = {
-    ENOENT: 'No such file or directory',
-    EACCES: 'Permission denied'
-  };
   inputStream.on('error', error => {
-    const errMsg = `tail: ${tailOptions.filePath}: ${fileErrors[error.code]}`;
-    process.exitCode = 2;
+    const errMsg = getErrorMessage(error.code, tailOptions.filePath);
     callBack({ errMsg });
   });
 

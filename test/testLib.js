@@ -35,6 +35,15 @@ describe('loadAndCutLines', function() {
     assert.ok(completeCallback.calledWith({ errMsg }));
   });
 
+  it('Should give error as empty string if we give directory only', function() {
+    const completeCallback = sinon.fake();
+    const errMsg = '';
+    const inputStream = new EventEmitter();
+    loadAndCutLines({ filePath: 'badFile' }, inputStream, completeCallback);
+    inputStream.emit('error', { code: 'EISDIR' });
+    assert.ok(completeCallback.calledWith({ errMsg }));
+  });
+
   it('Should should give empty string if file is empty ', function() {
     const completeCallback = sinon.fake();
     const inputStream = new EventEmitter();

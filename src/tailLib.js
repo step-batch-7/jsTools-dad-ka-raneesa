@@ -31,8 +31,8 @@ const loadAndCutLines = function(tailOptions, inputStream, callBack) {
 
 const getLastLines = function(linesRequired, lines) {
   const count = Math.abs(linesRequired);
-  lines = lines.split('\n');
-  const slicedLines = lines.slice(-count).join('\n');
+  const content = lines.split('\n');
+  const slicedLines = content.slice(-count).join('\n');
   return slicedLines;
 };
 

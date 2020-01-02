@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cat <<EOF > .git/hooks/pre-commit  
-npm run test
+npm run allTests
 if [ \$? != 0 ]; then 
     exit 1
 fi

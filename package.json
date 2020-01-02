@@ -19,7 +19,7 @@
   "scripts": {
     "test": "mocha && npm run getLinter && eslint src test",
     "appTest": "./runAppTests.sh appTests/*.test",
-    "alltests": "npm test && npm run linterTest && npm run appTest",
+    "alltests": "npm test && npm run appTest",
     "getLinter": "curl -s  https://raw.githubusercontent.com/blpabhishek/eslintrc-config/master/.eslintrc.json -o .eslintrc.json && eslint src test *.js"
   },
   "repository": {

@@ -14,6 +14,7 @@ const getErrorMessage = (errCode, filePath) => {
 };
 
 const loadAndCutLines = function(tailOptions, inputStream, callBack) {
+  inputStream.setEncoding('utf8');
   inputStream.on('error', error => {
     const errMsg = getErrorMessage(error.code, tailOptions.filePath);
     callBack({ errMsg, lastLines: '' });

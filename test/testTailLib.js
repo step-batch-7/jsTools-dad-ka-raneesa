@@ -1,7 +1,6 @@
 'use strict';
 const sinon = require('sinon');
 const assert = require('chai').assert;
-const { EventEmitter } = require('events');
 const {
   filterUserOptions,
   getErrorMessage,
@@ -38,29 +37,42 @@ describe('getErrorMessage', () => {
 });
 
 describe('loadAndCutLines', function() {
-  let formatTailOutput, inputStream;
+  let formatTailOutput = {}, inputStream;
   beforeEach(function() {
-    inputStream = new EventEmitter();
+    inputStream = { setEncoding: sinon.fake(), on: sinon.fake() };
     formatTailOutput = sinon.fake();
   });
+
   it('Should give error if file is not present', function() {
     const errMsg = 'tail: badFile: No such file or directory';
     loadAndCutLines({ filePath: 'badFile' }, inputStream, formatTailOutput);
-    inputStream.emit('error', { code: 'ENOENT' });
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.firstCall.args[1]({ code: 'ENOENT' });
+    inputStream.on.secondCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ errMsg, lastLines: '' }));
   });
 
   it('Should give error if file permission is denied', function() {
     const errMsg = 'tail: badFile: Permission denied';
     loadAndCutLines({ filePath: 'badFile' }, inputStream, formatTailOutput);
-    inputStream.emit('error', { code: 'EACCES' });
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.firstCall.args[1]({ code: 'EACCES' });
+    inputStream.on.secondCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ errMsg, lastLines: '' }));
   });
 
   it('Should give error as empty string if we give directory only', function() {
     const errMsg = '';
     loadAndCutLines({ filePath: 'badFile' }, inputStream, formatTailOutput);
-    inputStream.emit('error', { code: 'EISDIR' });
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.firstCall.args[1]({ code: 'EISDIR' });
+    inputStream.on.secondCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ errMsg, lastLines: '' }));
   });
 
@@ -70,8 +82,12 @@ describe('loadAndCutLines', function() {
       inputStream,
       formatTailOutput
     );
-    inputStream.emit('data', '');
-    inputStream.emit('end');
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
+    assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.secondCall.args[1]('');
+    inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines: '', errMsg: '' }));
   });
 
@@ -82,8 +98,12 @@ describe('loadAndCutLines', function() {
       inputStream,
       formatTailOutput
     );
-    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
-    inputStream.emit('end');
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
+    assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
+    inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
   });
 
@@ -94,8 +114,12 @@ describe('loadAndCutLines', function() {
       inputStream,
       formatTailOutput
     );
-    inputStream.emit('data', '1\n2\n3\n4\n5');
-    inputStream.emit('end');
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
+    assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5');
+    inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
   });
 
@@ -109,8 +133,12 @@ describe('loadAndCutLines', function() {
       inputStream,
       formatTailOutput
     );
-    inputStream.emit('data', '1\n2\n3\n4\n5\n6\n7\n8');
-    inputStream.emit('end');
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
+    assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8');
+    inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
   });
 
@@ -121,8 +149,12 @@ describe('loadAndCutLines', function() {
       inputStream,
       formatTailOutput
     );
-    inputStream.emit('data', '1\n2\n3\n4\n5');
-    inputStream.emit('end');
+    assert(inputStream.setEncoding.calledWith('utf8'));
+    assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
+    assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
+    assert.strictEqual(inputStream.on.callCount, 3);
+    inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5');
+    inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
   });
 });

@@ -48,7 +48,6 @@ describe('loadAndCutLines', function() {
     loadAndCutLines({ filePath: 'badFile' }, inputStream, formatTailOutput);
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.firstCall.args[1]({ code: 'ENOENT' });
     inputStream.on.secondCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ errMsg, lastLines: '' }));
@@ -59,7 +58,6 @@ describe('loadAndCutLines', function() {
     loadAndCutLines({ filePath: 'badFile' }, inputStream, formatTailOutput);
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.firstCall.args[1]({ code: 'EACCES' });
     inputStream.on.secondCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ errMsg, lastLines: '' }));
@@ -70,7 +68,6 @@ describe('loadAndCutLines', function() {
     loadAndCutLines({ filePath: 'badFile' }, inputStream, formatTailOutput);
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.firstCall.args[1]({ code: 'EISDIR' });
     inputStream.on.secondCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ errMsg, lastLines: '' }));
@@ -85,7 +82,6 @@ describe('loadAndCutLines', function() {
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
     assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.secondCall.args[1]('');
     inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines: '', errMsg: '' }));
@@ -101,7 +97,6 @@ describe('loadAndCutLines', function() {
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
     assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
     inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
@@ -117,7 +112,6 @@ describe('loadAndCutLines', function() {
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
     assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5');
     inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
@@ -136,7 +130,6 @@ describe('loadAndCutLines', function() {
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
     assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8');
     inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));
@@ -152,7 +145,6 @@ describe('loadAndCutLines', function() {
     assert(inputStream.setEncoding.calledWith('utf8'));
     assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
     assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-    assert.strictEqual(inputStream.on.callCount, 3);
     inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5');
     inputStream.on.thirdCall.args[1]();
     assert.ok(formatTailOutput.calledWith({ lastLines, errMsg: '' }));

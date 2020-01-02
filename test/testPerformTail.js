@@ -30,7 +30,6 @@ describe('tail', function() {
       tail(['node', 'tail.js', 'badFile'], { createReadStream }, onCompletion);
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.firstCall.args[1]({ code: 'ENOENT' });
       inputStream.on.secondCall.args[1]();
       assert.ok(onCompletion.calledWith({ error, lastLines: '' }));
@@ -52,7 +51,6 @@ describe('tail', function() {
       );
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.firstCall.args[1]({ code: 'EACCES' });
       inputStream.on.secondCall.args[1]();
       assert.ok(onCompletion.calledWith({ error, lastLines: '' }));
@@ -65,7 +63,6 @@ describe('tail', function() {
       tail(['node', 'tail.js', 'a.txt'], { createReadStream }, onCompletion);
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.firstCall.args[0], 'error');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.firstCall.args[1]('');
       inputStream.on.secondCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines: '' }));
@@ -78,7 +75,6 @@ describe('tail', function() {
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
       assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11');
       inputStream.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -91,7 +87,6 @@ describe('tail', function() {
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
       assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6');
       inputStream.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -108,7 +103,6 @@ describe('tail', function() {
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
       assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11');
       inputStream.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -125,7 +119,6 @@ describe('tail', function() {
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
       assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.secondCall.args[1]('1\n2\n3\n4');
       inputStream.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -142,7 +135,6 @@ describe('tail', function() {
       assert(inputStream.setEncoding.calledWith('utf8'));
       assert.strictEqual(inputStream.on.secondCall.args[0], 'data');
       assert.strictEqual(inputStream.on.thirdCall.args[0], 'end');
-      assert.strictEqual(inputStream.on.callCount, 3);
       inputStream.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11');
       inputStream.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -161,7 +153,6 @@ describe('tail', function() {
       assert(stdin.setEncoding.calledWith('utf8'));
       assert.strictEqual(stdin.on.secondCall.args[0], 'data');
       assert.strictEqual(stdin.on.thirdCall.args[0], 'end');
-      assert.strictEqual(stdin.on.callCount, 3);
       stdin.on.secondCall.args[1]('');
       stdin.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines: '' }));
@@ -174,7 +165,6 @@ describe('tail', function() {
       assert(stdin.setEncoding.calledWith('utf8'));
       assert.strictEqual(stdin.on.secondCall.args[0], 'data');
       assert.strictEqual(stdin.on.thirdCall.args[0], 'end');
-      assert.strictEqual(stdin.on.callCount, 3);
       stdin.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
       stdin.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -187,7 +177,6 @@ describe('tail', function() {
       assert(stdin.setEncoding.calledWith('utf8'));
       assert.strictEqual(stdin.on.secondCall.args[0], 'data');
       assert.strictEqual(stdin.on.thirdCall.args[0], 'end');
-      assert.strictEqual(stdin.on.callCount, 3);
       stdin.on.secondCall.args[1]('1\n2\n3\n4\n5\n6');
       stdin.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -204,7 +193,6 @@ describe('tail', function() {
       assert(stdin.setEncoding.calledWith('utf8'));
       assert.strictEqual(stdin.on.secondCall.args[0], 'data');
       assert.strictEqual(stdin.on.thirdCall.args[0], 'end');
-      assert.strictEqual(stdin.on.callCount, 3);
       stdin.on.secondCall.args[1]('1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12');
       stdin.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));
@@ -221,7 +209,6 @@ describe('tail', function() {
       assert(stdin.setEncoding.calledWith('utf8'));
       assert.strictEqual(stdin.on.secondCall.args[0], 'data');
       assert.strictEqual(stdin.on.thirdCall.args[0], 'end');
-      assert.strictEqual(stdin.on.callCount, 3);
       stdin.on.secondCall.args[1]('1\n2\n3\n4');
       stdin.on.thirdCall.args[1]();
       assert.ok(onCompletion.calledWith({ error: '', lastLines }));

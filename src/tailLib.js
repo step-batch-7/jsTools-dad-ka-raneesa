@@ -38,5 +38,6 @@ const getLastLines = function(linesRequired, lines) {
 
 module.exports = {
   filterUserOptions,
+  getErrorMessage,
   loadAndCutLines
 };

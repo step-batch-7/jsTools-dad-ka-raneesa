@@ -2,7 +2,11 @@
 const sinon = require('sinon');
 const assert = require('chai').assert;
 const { EventEmitter } = require('events');
-const { filterUserOptions, loadAndCutLines } = require('../src/tailLib');
+const {
+  filterUserOptions,
+  getErrorMessage,
+  loadAndCutLines
+} = require('../src/tailLib');
 
 describe('filterUserOptions', function() {
   it('Should give file name in an array', function() {
@@ -13,6 +17,23 @@ describe('filterUserOptions', function() {
   it('Should give no of line and file name an array', function() {
     const actual = filterUserOptions(['node', 'tail.js', '-n', '8', 'a.txt']);
     assert.deepStrictEqual(actual, ['-n', '8', 'a.txt']);
+  });
+});
+
+describe('getErrorMessage', () => {
+  it('Should error for given error code', () => {
+    assert.strictEqual(getErrorMessage('EISDIR', 'a.txt'), '');
+    assert.strictEqual(
+      getErrorMessage('EACCES', 'a.txt'),
+      'tail: a.txt: Permission denied'
+    );
+    assert.strictEqual(
+      getErrorMessage('ENOENT', 'a.txt'),
+      'tail: a.txt: No such file or directory'
+    );
+  });
+  it('Should give undefined for if error code is not present', () => {
+    assert.isUndefined(getErrorMessage('ERROR'));
   });
 });
 

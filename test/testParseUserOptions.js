@@ -16,7 +16,7 @@ describe('parseOffset', function() {
   });
 
   it('should give the parsed number if given args is a number', function() {
-    assert.deepStrictEqual(parseOffset('8'), { error: '', linesRequired: '8' });
+    assert.deepStrictEqual(parseOffset('8'), {error: '', linesRequired: '8'});
   });
 });
 

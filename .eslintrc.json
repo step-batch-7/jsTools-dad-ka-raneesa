@@ -35,7 +35,12 @@
     "id-length": "error",
     "key-spacing": "error",
     "max-len": "error",
-    "max-params": "error",
+    "max-params": [
+      "error",
+      {
+        "max": 4
+      }
+    ],
     "max-statements": "error",
     "no-console": "error",
     "no-else-return": "error",
@@ -61,13 +66,25 @@
     "no-proto": "error",
     "prefer-spread": "warn",
     "no-useless-call": "error",
-    "no-param-reassign": "error"
+    "no-param-reassign": "error",
+    "space-infix-ops": "error",
+    "no-multi-spaces": "error",
+    //"object-curly-spacing": "error",
+    "semi-spacing": "error",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1
+      }
+    ]
   },
   "overrides": [
     {
       "files": ["test*.js"],
       "rules": {
-        "no-magic-numbers": "off"
+        "max-len": "warn",
+        "no-magic-numbers": "off",
+        "max-statements": "off"
       }
     }
   ]

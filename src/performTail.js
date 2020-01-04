@@ -1,7 +1,8 @@
 'use strict';
 
-const {filterUserOptions, loadAndCutLines} = require('./tailLib.js');
+const {filterUserOptions, getLastLines} = require('./tailLib');
 const {parseUserOptions} = require('./parseUserOptions');
+const {readStream} = require('./streamReader');
 
 const tail = function(cmdArgs, streams, onCompletion) {
   const EMPTY_STRING = '';
@@ -12,18 +13,20 @@ const tail = function(cmdArgs, streams, onCompletion) {
     onCompletion({error: tailOptions.error, lastLines: EMPTY_STRING});
     return;
   }
-  const formatTailOutput = function({errMsg, lastLines}) {
+  const formatTailOutput = function({errMsg, content}) {
     if (errMsg) {
-      onCompletion({error: errMsg, lastLines: EMPTY_STRING});
+      const error = `tail: ${tailOptions.filePath}: ${errMsg}`;
+      onCompletion({error, lastLines: EMPTY_STRING});
       return;
     }
+    const lastLines = getLastLines(tailOptions.linesRequired, content);
     onCompletion({error: EMPTY_STRING, lastLines});
   };
 
-  const inputStream = tailOptions.filePath
-    ? createReadStream(tailOptions.filePath)
-    : createStdinStream();
-  loadAndCutLines(tailOptions, inputStream, formatTailOutput);
+  const inputStream = tailOptions.filePath ?
+    () => createReadStream(tailOptions.filePath) :
+    () => createStdinStream();
+  readStream(inputStream(), formatTailOutput);
 };
 
 module.exports = {tail};

@@ -17,10 +17,10 @@
     "sinon": "^8.0.2"
   },
   "scripts": {
-    "test": "mocha && eslint src test",
+    "test": "mocha && npm run linterTest",
     "appTest": "./runAppTests.sh appTests/*.test",
     "alltests": "npm test && npm run appTest",
-    "linter": "npm run getLinter",
+    "linterTest": "npm run getLinter && eslint src test",
     "getLinter": "curl -s  https://raw.githubusercontent.com/blpabhishek/eslintrc-config/master/.eslintrc.json -o .eslintrc.json && eslint src test *.js"
   },
   "repository": {

@@ -51,8 +51,7 @@ const parseOption = function(option) {
 };
 
 const parseUserOptions = function(userOptions) {
-  const length = 0;
-  if (userOptions.length === length) {
+  if (!userOptions.length) {
     return {
       error: '',
       filePath: '',

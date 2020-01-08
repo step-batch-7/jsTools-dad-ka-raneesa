@@ -7,9 +7,9 @@ const isOffsetSeparate = function(option) {
 
 const parseOffset = function(num) {
   if (isNaN(+num)) {
-    return {error: `tail: illegal offset -- ${num}`, linesRequired: ''};
+    return { error: `tail: illegal offset -- ${num}`, linesRequired: '' };
   }
-  return {error: '', linesRequired: `${num}`};
+  return { error: '', linesRequired: `${num}` };
 };
 
 const isOffsetAttached = function(option) {
@@ -21,12 +21,12 @@ const parseByCheck = function(options) {
   const [option, offset, filePath] = options;
   if (isOffsetAttached(option)) {
     const [, , ...newOffset] = option;
-    return {...parseOffset(newOffset.join('')), filePath: offset};
+    return { ...parseOffset(newOffset.join('')), filePath: offset };
   }
   if (isOffsetSeparate(option)) {
-    return {...parseOffset(offset), filePath};
+    return { ...parseOffset(offset), filePath };
   }
-  return {...parseOffset(option), filePath: offset};
+  return { ...parseOffset(option), filePath: offset };
 };
 
 const isACountOption = function(arg) {
@@ -61,12 +61,12 @@ const parseUserOptions = function(userOptions) {
   }
   const [option] = userOptions;
   if (!isAnOption(option)) {
-    return {error: '', filePath: option, linesRequired: 10};
+    return { error: '', filePath: option, linesRequired: 10 };
   }
   if (!isACountOption(option)) {
-    return {error: parseOption(option), filePath: '', linesRequired: ''};
+    return { error: parseOption(option), filePath: '', linesRequired: '' };
   }
   return parseByCheck(userOptions);
 };
 
-module.exports = {parseOffset, parseByCheck, parseUserOptions};
+module.exports = { parseOffset, parseByCheck, parseUserOptions };

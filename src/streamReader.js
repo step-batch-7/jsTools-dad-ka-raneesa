@@ -18,13 +18,13 @@ const fileErrors = {
 const readStream = (readableStream, formatTailOutput) => {
   const reader = new Reader();
   readableStream.on('error', (error) => {
-    formatTailOutput({errMsg: fileErrors[error.code], content: ''});
+    formatTailOutput({ errMsg: fileErrors[error.code], content: '' });
   });
   readableStream.on('data', (chunk) => {
     reader.append(chunk);
   });
   readableStream.on('end', () => {
-    formatTailOutput({content: reader.content, errMsg: ''});
+    formatTailOutput({ content: reader.content, errMsg: '' });
   });
 };
-module.exports = {readStream};
+module.exports = { readStream };
